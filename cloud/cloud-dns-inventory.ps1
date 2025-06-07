@@ -9,7 +9,7 @@
     Path to export results.
 #>
 param(
-    [ValidateSet('Azure','AWS','GCP')][string]$Provider,
+    [ValidateSet('Azure', 'AWS', 'GCP')][string]$Provider,
     [string]$OutputCsv = 'CloudDnsInventory.csv'
 )
 

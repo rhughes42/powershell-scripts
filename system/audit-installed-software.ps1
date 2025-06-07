@@ -21,11 +21,11 @@ foreach ($path in $regPaths) {
     foreach ($item in $items) {
         if ($item.DisplayName) {
             $results += [PSCustomObject]@{
-                Name = $item.DisplayName
-                Version = $item.DisplayVersion
-                Publisher = $item.Publisher
+                Name        = $item.DisplayName
+                Version     = $item.DisplayVersion
+                Publisher   = $item.Publisher
                 InstallDate = $item.InstallDate
-                Source = 'Registry'
+                Source      = 'Registry'
             }
         }
     }
@@ -34,11 +34,11 @@ foreach ($path in $regPaths) {
 $wmi = Get-WmiObject -Class Win32_Product -ErrorAction SilentlyContinue
 foreach ($app in $wmi) {
     $results += [PSCustomObject]@{
-        Name = $app.Name
-        Version = $app.Version
-        Publisher = $app.Vendor
+        Name        = $app.Name
+        Version     = $app.Version
+        Publisher   = $app.Vendor
         InstallDate = $app.InstallDate
-        Source = 'WMI'
+        Source      = 'WMI'
     }
 }
 $results | Sort-Object Name | Format-Table -AutoSize

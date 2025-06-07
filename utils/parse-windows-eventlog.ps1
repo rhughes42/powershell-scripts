@@ -21,11 +21,11 @@ Computational Analysis & Geometry · Applied AI · Robotics
 #>
 param(
     [string]$LogName = 'System',
-    [int[]]$EventIds = @(6005,6006),
+    [int[]]$EventIds = @(6005, 6006),
     [string]$OutputCsv = 'EventLogResults.csv'
 )
 
-$results = Get-WinEvent -LogName $LogName -FilterHashtable @{Id=$EventIds} |
-    Select-Object TimeCreated, Id, LevelDisplayName, Message | Sort-Object TimeCreated
+$results = Get-WinEvent -LogName $LogName -FilterHashtable @{Id = $EventIds } |
+Select-Object TimeCreated, Id, LevelDisplayName, Message | Sort-Object TimeCreated
 $results | Format-Table -AutoSize
 $results | Export-Csv -Path $OutputCsv -NoTypeInformation

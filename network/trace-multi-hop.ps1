@@ -18,7 +18,7 @@ Computational Analysis & Geometry · Applied AI · Robotics
     Path to export hop statistics.
 #>
 param(
-    [string[]]$Hosts = @('google.com','cloudflare.com'),
+    [string[]]$Hosts = @('google.com', 'cloudflare.com'),
     [string]$OutputCsv = 'TraceMultiHopResults.csv'
 )
 
@@ -32,11 +32,11 @@ foreach ($host in $Hosts) {
     $minRtt = ($hops | Measure-Object -Property ResponseTime -Minimum).Minimum
     $avgRtt = ($hops | Measure-Object -Property ResponseTime -Average).Average
     $results += [PSCustomObject]@{
-        Host = $host
+        Host     = $host
         HopCount = $hopCount
-        MinRttMs = [math]::Round($minRtt,2)
-        MaxRttMs = [math]::Round($maxRtt,2)
-        AvgRttMs = [math]::Round($avgRtt,2)
+        MinRttMs = [math]::Round($minRtt, 2)
+        MaxRttMs = [math]::Round($maxRtt, 2)
+        AvgRttMs = [math]::Round($avgRtt, 2)
     }
 }
 $results | Format-Table -AutoSize

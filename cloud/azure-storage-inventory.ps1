@@ -19,9 +19,9 @@ foreach ($acct in $accounts) {
     $containers = az storage container list --account-name $acct.name --auth-mode login | ConvertFrom-Json
     foreach ($c in $containers) {
         $results += [PSCustomObject]@{
-            Account = $acct.name
-            Container = $c.name
-            Location = $acct.location
+            Account       = $acct.name
+            Container     = $c.name
+            Location      = $acct.location
             ResourceGroup = $acct.resourceGroup
         }
     }

@@ -32,4 +32,4 @@ pwsh ./network/test-vpn-connectivity.ps1 -Hosts @('8.8.8.8','1.1.1.1')
 
 ---
 
-Graph Technologies · https://graphtechnologies.xyz/
+Graph Technologies · <https://graphtechnologies.xyz/>

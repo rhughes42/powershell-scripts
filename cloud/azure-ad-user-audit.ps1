@@ -14,12 +14,12 @@ Connect-AzureAD | Out-Null
 $users = Get-AzureADUser -All $true
 $results = @()
 foreach ($user in $users) {
-    $mfa = (Get-AzureADUserAuthenticationMethods -ObjectId $user.ObjectId | Where-Object {$_.Type -eq 'MicrosoftAuthenticator'})
+    $mfa = (Get-AzureADUserAuthenticationMethods -ObjectId $user.ObjectId | Where-Object { $_.Type -eq 'MicrosoftAuthenticator' })
     $lastLogin = $user.LastLogonDateTime
     $results += [PSCustomObject]@{
         UserPrincipalName = $user.UserPrincipalName
-        MFAEnabled = [bool]$mfa
-        LastLogin = $lastLogin
+        MFAEnabled        = [bool]$mfa
+        LastLogin         = $lastLogin
     }
 }
 $results | Format-Table -AutoSize

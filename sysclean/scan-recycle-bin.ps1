@@ -12,11 +12,11 @@ param(
 
 $shell = New-Object -ComObject Shell.Application
 $bin = $shell.Namespace(0xA)
-$items = @(1..$bin.Items().Count | ForEach-Object { $bin.Items().Item($_-1) })
+$items = @(1..$bin.Items().Count | ForEach-Object { $bin.Items().Item($_ - 1) })
 $totalSize = ($items | Measure-Object -Property Size -Sum).Sum
 $results = [PSCustomObject]@{
-    ItemCount = $items.Count
-    TotalSizeMB = [math]::Round($totalSize/1MB,2)
+    ItemCount   = $items.Count
+    TotalSizeMB = [math]::Round($totalSize / 1MB, 2)
 }
 $results | Format-Table -AutoSize
 $results | Export-Csv -Path $OutputCsv -NoTypeInformation

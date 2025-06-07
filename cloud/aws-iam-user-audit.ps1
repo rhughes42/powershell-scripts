@@ -16,8 +16,8 @@ foreach ($user in $users.Users) {
     $mfa = aws iam list-mfa-devices --user-name $user.UserName | ConvertFrom-Json
     $last = aws iam get-user --user-name $user.UserName | ConvertFrom-Json
     $results += [PSCustomObject]@{
-        UserName = $user.UserName
-        MFAEnabled = ($mfa.MFADevices.Count -gt 0)
+        UserName     = $user.UserName
+        MFAEnabled   = ($mfa.MFADevices.Count -gt 0)
         LastActivity = $last.User.PasswordLastUsed
     }
 }

@@ -25,10 +25,10 @@ Computational Analysis & Geometry · Applied AI · Robotics
 #>
 
 param (
-    [string[]]$Hosts        = @('8.8.8.8', '1.1.1.1'),
+    [string[]]$Hosts = @('8.8.8.8', '1.1.1.1'),
     [string[]]$TcpEndpoints = @('google.com:443', 'protonvpn.com:443'),
-    [int]     $PingCount    = 4,
-    [string]  $OutputCsv    = "VpnTestResults.csv"
+    [int]     $PingCount = 4,
+    [string]  $OutputCsv = "VpnTestResults.csv"
 )
 
 #region Helper Functions
@@ -61,13 +61,13 @@ function Test-Ping {
     )
     $results = Test-Connection -ComputerName $TargetHost -Count $PingCount -ErrorAction SilentlyContinue
     if (-not $results) {
-        return [PSCustomObject]@{ Host=$TargetHost; Status='Failed'; AvgLatency=$null; MinLatency=$null; MaxLatency=$null }
+        return [PSCustomObject]@{ Host = $TargetHost; Status = 'Failed'; AvgLatency = $null; MinLatency = $null; MaxLatency = $null }
     }
     else {
         $avg = ($results | Measure-Object -Property ResponseTime -Average).Average
         $min = ($results | Measure-Object -Property ResponseTime -Minimum).Minimum
         $max = ($results | Measure-Object -Property ResponseTime -Maximum).Maximum
-        return [PSCustomObject]@{ Host=$TargetHost; Status='Success'; AvgLatency=[math]::Round($avg,2); MinLatency=$min; MaxLatency=$max }
+        return [PSCustomObject]@{ Host = $TargetHost; Status = 'Success'; AvgLatency = [math]::Round($avg, 2); MinLatency = $min; MaxLatency = $max }
     }
 }
 
@@ -100,7 +100,7 @@ function Test-TcpPort {
     $start = Get-Date
     $res = Test-NetConnection -ComputerName $host -Port [int]$port -WarningAction SilentlyContinue
     $lat = ((Get-Date) - $start).TotalMilliseconds
-    return [PSCustomObject]@{ Endpoint=$Endpoint; TcpStatus=if ($res.TcpTestSucceeded) {'Open'} else {'Closed'}; LatencyMs=[math]::Round($lat,2) }
+    return [PSCustomObject]@{ Endpoint = $Endpoint; TcpStatus = if ($res.TcpTestSucceeded) { 'Open' } else { 'Closed' }; LatencyMs = [math]::Round($lat, 2) }
 }
 
 <#
@@ -133,9 +133,10 @@ function Test-DnsResolve {
         $resp = Resolve-DnsName -Name $TargetHost -ErrorAction Stop
         $time = ((Get-Date) - $start).TotalMilliseconds
         $addrs = ($resp | Where-Object IPAddress | Select-Object -Expand IPAddress) -join ','
-        return [PSCustomObject]@{ Host=$TargetHost; Status='Resolved'; ResolveTimeMs=[math]::Round($time,2); Addresses=$addrs }
-    } catch {
-        return [PSCustomObject]@{ Host=$TargetHost; Status='Failed'; ResolveTimeMs=$null; Addresses='' }
+        return [PSCustomObject]@{ Host = $TargetHost; Status = 'Resolved'; ResolveTimeMs = [math]::Round($time, 2); Addresses = $addrs }
+    }
+    catch {
+        return [PSCustomObject]@{ Host = $TargetHost; Status = 'Failed'; ResolveTimeMs = $null; Addresses = '' }
     }
 }
 
@@ -169,16 +170,18 @@ function Test-TlsHandshake {
         $tcp = [System.Net.Sockets.TcpClient]::new()
         $start = Get-Date
         $tcp.Connect($host, [int]$port)
-        $ssl = New-Object System.Net.Security.SslStream($tcp.GetStream(), $false, ({$true}))
+        $ssl = New-Object System.Net.Security.SslStream($tcp.GetStream(), $false, ({ $true }))
         $ssl.AuthenticateAsClient($host)
         $time = ((Get-Date) - $start).TotalMilliseconds
         $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 $ssl.RemoteCertificate
         return [PSCustomObject]@{
-            Endpoint=$Endpoint; HandshakeMs=[math]::Round($time,2); Issuer=$cert.Issuer; Subject=$cert.Subject; Expiration=$cert.NotAfter
+            Endpoint = $Endpoint; HandshakeMs = [math]::Round($time, 2); Issuer = $cert.Issuer; Subject = $cert.Subject; Expiration = $cert.NotAfter
         }
-    } catch {
-        return [PSCustomObject]@{ Endpoint=$Endpoint; HandshakeMs=$null; Issuer=''; Subject=''; Expiration=$null }
-    } finally {
+    }
+    catch {
+        return [PSCustomObject]@{ Endpoint = $Endpoint; HandshakeMs = $null; Issuer = ''; Subject = ''; Expiration = $null }
+    }
+    finally {
         $ssl.Dispose()    ; $tcp.Close()
     }
 }

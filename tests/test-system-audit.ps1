@@ -20,9 +20,11 @@ if (Test-Path 'test_sysinfo_out.csv' -and Test-Path 'test_software_out.csv') {
     $software = Import-Csv 'test_software_out.csv'
     if ($sysinfo.ComputerName -and $software.Name) {
         Write-Host 'System audit test passed.'
-    } else {
+    }
+    else {
         Write-Host 'System audit test failed: missing data.'
     }
-} else {
+}
+else {
     Write-Host 'System audit test failed: missing files.'
 }

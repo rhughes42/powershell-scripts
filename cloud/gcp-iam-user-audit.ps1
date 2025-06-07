@@ -19,7 +19,7 @@ foreach ($binding in $members.bindings) {
     foreach ($member in $binding.members) {
         $results += [PSCustomObject]@{
             Member = $member
-            Role = $binding.role
+            Role   = $binding.role
         }
     }
 }

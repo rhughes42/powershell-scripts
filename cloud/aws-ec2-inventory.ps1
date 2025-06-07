@@ -16,10 +16,10 @@ foreach ($r in $instances.Reservations) {
     foreach ($i in $r.Instances) {
         $results += [PSCustomObject]@{
             InstanceId = $i.InstanceId
-            State = $i.State.Name
-            Type = $i.InstanceType
-            PublicIp = $i.PublicIpAddress
-            PrivateIp = $i.PrivateIpAddress
+            State      = $i.State.Name
+            Type       = $i.InstanceType
+            PublicIp   = $i.PublicIpAddress
+            PrivateIp  = $i.PrivateIpAddress
             LaunchTime = $i.LaunchTime
         }
     }

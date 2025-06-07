@@ -18,16 +18,17 @@ Computational Analysis & Geometry · Applied AI · Robotics
     Path to export results.
 #>
 param(
-    [string[]]$Hosts = @('google.com','microsoft.com'),
+    [string[]]$Hosts = @('google.com', 'graphtechnologies.xyz'),
     [string]$OutputCsv = 'DnsTestResults.csv'
 )
 
 $results = $Hosts | ForEach-Object {
     try {
         $res = Resolve-DnsName -Name $_ -ErrorAction Stop
-        [PSCustomObject]@{ Host=$_; Status='Resolved'; Addresses=($res | Where-Object IPAddress | Select-Object -ExpandProperty IPAddress -Unique) -join ',' }
-    } catch {
-        [PSCustomObject]@{ Host=$_; Status='Failed'; Addresses='' }
+        [PSCustomObject]@{ Host = $_; Status = 'Resolved'; Addresses = ($res | Where-Object IPAddress | Select-Object -ExpandProperty IPAddress -Unique) -join ',' }
+    }
+    catch {
+        [PSCustomObject]@{ Host = $_; Status = 'Failed'; Addresses = '' }
     }
 }
 $results | Format-Table -AutoSize

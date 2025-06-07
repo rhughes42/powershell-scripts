@@ -34,12 +34,13 @@ foreach ($proc in Get-Process) {
             $suspicious = $true
             $reason += 'Known bad hash'
         }
-    } catch { $reason += 'Error inspecting process' }
+    }
+    catch { $reason += 'Error inspecting process' }
     if ($suspicious) {
         $results += [PSCustomObject]@{
-            Name = $proc.Name
-            Id = $proc.Id
-            Path = $path
+            Name    = $proc.Name
+            Id      = $proc.Id
+            Path    = $path
             Reasons = $reason -join '; '
         }
     }

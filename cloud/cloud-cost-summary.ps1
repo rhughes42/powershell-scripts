@@ -9,7 +9,7 @@
     Path to export results.
 #>
 param(
-    [ValidateSet('Azure','AWS','GCP')][string]$Provider,
+    [ValidateSet('Azure', 'AWS', 'GCP')][string]$Provider,
     [string]$OutputCsv = 'CloudCostSummary.csv'
 )
 
@@ -19,7 +19,7 @@ switch ($Provider) {
         $results = $costs | Select-Object usageStart, usageEnd, instanceName, pretaxCost
     }
     'AWS' {
-        $costs = aws ce get-cost-and-usage --time-period Start=$(Get-Date -Format yyyy-MM-01),End=$(Get-Date -Format yyyy-MM-dd) --granularity MONTHLY --metrics "UnblendedCost" | ConvertFrom-Json
+        $costs = aws ce get-cost-and-usage --time-period Start=$(Get-Date -Format yyyy-MM-01), End=$(Get-Date -Format yyyy-MM-dd) --granularity MONTHLY --metrics "UnblendedCost" | ConvertFrom-Json
         $results = $costs.ResultsByTime | Select-Object TimePeriod, Total
     }
     'GCP' {

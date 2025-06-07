@@ -19,8 +19,8 @@ foreach ($bucket in $buckets.Buckets) {
     $public = $acl.Grants | Where-Object { $_.Grantee.URI -like '*AllUsers*' }
     $encrypted = $enc.ServerSideEncryptionConfiguration.Rules.Count -gt 0
     $results += [PSCustomObject]@{
-        Bucket = $name
-        Public = [bool]$public
+        Bucket    = $name
+        Public    = [bool]$public
         Encrypted = $encrypted
     }
 }

@@ -18,10 +18,10 @@ $results = @()
 foreach ($bucket in $buckets) {
     $acl = gcloud storage buckets get-iam-policy $bucket.name --project $Project --format=json | ConvertFrom-Json
     $public = $acl.bindings | Where-Object { $_.members -contains 'allUsers' }
-    $encrypted = $bucket.encryption -ne $null
+    $encrypted = $null -ne $bucket.encryption
     $results += [PSCustomObject]@{
-        Bucket = $bucket.name
-        Public = [bool]$public
+        Bucket    = $bucket.name
+        Public    = [bool]$public
         Encrypted = $encrypted
     }
 }

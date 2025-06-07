@@ -34,7 +34,7 @@ function Get-FileHashTable($dir) {
     $table = @{}
     Get-ChildItem -Path $dir -Recurse -File | ForEach-Object {
         $hash = Get-FileHash $_.FullName -Algorithm SHA256
-        $rel = $_.FullName.Substring($dir.Length).TrimStart('\','/')
+        $rel = $_.FullName.Substring($dir.Length).TrimStart('\', '/')
         $table[$rel] = $hash.Hash
     }
     return $table
@@ -51,12 +51,13 @@ $hashB = Get-FileHashTable $PathB
 $allKeys = $hashA.Keys + $hashB.Keys | Sort-Object -Unique
 $results = foreach ($key in $allKeys) {
     [PSCustomObject]@{
-        File = $key
-        HashA = $hashA[$key]
-        HashB = $hashB[$key]
+        File   = $key
+        HashA  = $hashA[$key]
+        HashB  = $hashB[$key]
         Status = if ($hashA[$key] -and $hashB[$key]) {
             if ($hashA[$key] -eq $hashB[$key]) { 'Match' } else { 'Different' }
-        } elseif ($hashA[$key]) { 'OnlyInA' } else { 'OnlyInB' }
+        }
+        elseif ($hashA[$key]) { 'OnlyInA' } else { 'OnlyInB' }
     }
 }
 $results | Format-Table -AutoSize

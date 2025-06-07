@@ -30,7 +30,7 @@ while ((Get-Date) -lt $end) {
     $now = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
     if ($cpu -ge $CpuThreshold) { Write-Host "[ALERT] CPU usage high: $([math]::Round($cpu,2))% at $now" -ForegroundColor Red }
     if ($mem -ge $MemoryThreshold) { Write-Host "[ALERT] Memory usage high: $([math]::Round($mem,2))% at $now" -ForegroundColor Red }
-    $results += [PSCustomObject]@{ Timestamp=$now; CpuPercent=[math]::Round($cpu,2); MemoryPercent=[math]::Round($mem,2) }
+    $results += [PSCustomObject]@{ Timestamp = $now; CpuPercent = [math]::Round($cpu, 2); MemoryPercent = [math]::Round($mem, 2) }
     Start-Sleep -Seconds $IntervalSeconds
 }
 $results | Format-Table -AutoSize

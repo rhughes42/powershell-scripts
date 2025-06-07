@@ -4,7 +4,9 @@
 ▄█ ▀█▄▐▀▀▄ ▄█▀▀█  ██▀·██▀▐█
 ▐█▄▪▐█▐█•█▌▐█ ▪▐▌▐█▪·•██▌▐▀
 ·▀▀▀▀ .▀  ▀ ▀  ▀ .▀   ▀▀▀ ·
+#>
 
+<#
 Graph Technologies · https://graphtechnologies.xyz/
 Computational Analysis & Geometry · Applied AI · Robotics
 
@@ -17,6 +19,7 @@ $expected = 'Hello, World!'
 $output = & { Write-Output 'Hello, World!' }
 if ($output -eq $expected) {
     Write-Host 'Test Passed.'
-} else {
+}
+else {
     Write-Host 'Test Failed.'
 }

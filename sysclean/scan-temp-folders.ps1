@@ -17,9 +17,9 @@ foreach ($folder in $folders) {
         $files = Get-ChildItem -Path $folder -Recurse -File -ErrorAction SilentlyContinue
         $size = ($files | Measure-Object -Property Length -Sum).Sum
         $results += [PSCustomObject]@{
-            Folder = $folder
-            FileCount = $files.Count
-            TotalSizeMB = [math]::Round($size/1MB,2)
+            Folder      = $folder
+            FileCount   = $files.Count
+            TotalSizeMB = [math]::Round($size / 1MB, 2)
         }
     }
 }

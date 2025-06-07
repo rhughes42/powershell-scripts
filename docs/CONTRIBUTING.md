@@ -20,4 +20,4 @@ Thank you for your interest in contributing!
 
 ---
 
-Graph Technologies · https://graphtechnologies.xyz/
+Graph Technologies · <https://graphtechnologies.xyz/>

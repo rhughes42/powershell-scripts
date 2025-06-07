@@ -23,7 +23,7 @@ foreach ($folder in $folders) {
     if ($size -ge ($MinSizeMB * 1MB)) {
         $results += [PSCustomObject]@{
             Folder = $folder.FullName
-            SizeMB = [math]::Round($size/1MB,2)
+            SizeMB = [math]::Round($size / 1MB, 2)
         }
     }
 }

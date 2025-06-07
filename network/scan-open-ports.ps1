@@ -44,7 +44,8 @@ function Test-Port {
         }
         $tcp.Close()
         return $false
-    } catch { return $false }
+    }
+    catch { return $false }
 }
 
 param(
@@ -57,9 +58,10 @@ $results = @()
 foreach ($port in $Ports) {
     if (Test-Port -Host $Target -Port $port) {
         Write-Host "Port $port open on $Target"
-        $results += [PSCustomObject]@{ Host=$Target; Port=$port; Status='Open' }
-    } else {
-        $results += [PSCustomObject]@{ Host=$Target; Port=$port; Status='Closed' }
+        $results += [PSCustomObject]@{ Host = $Target; Port = $port; Status = 'Open' }
+    }
+    else {
+        $results += [PSCustomObject]@{ Host = $Target; Port = $port; Status = 'Closed' }
     }
 }
 $results | Format-Table -AutoSize

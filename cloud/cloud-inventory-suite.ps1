@@ -9,6 +9,7 @@
 & ./gcp-list-vms.ps1 -Project 'my-gcp-project' -OutputCsv 'test_gcpvm_out.csv'
 if (Test-Path 'test_azres_out.csv' -and Test-Path 'test_awss3_out.csv' -and Test-Path 'test_gcpvm_out.csv') {
     Write-Host 'Cloud inventory suite passed.'
-} else {
+}
+else {
     Write-Host 'Cloud inventory suite failed.'
 }

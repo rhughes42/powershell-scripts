@@ -9,7 +9,7 @@
     Path to export results.
 #>
 param(
-    [string[]]$Urls = @('https://www.microsoft.com','https://expired.badssl.com'),
+    [string[]]$Urls = @('https://www.microsoft.com', 'https://expired.badssl.com'),
     [string]$OutputCsv = 'HttpEndpointResults.csv'
 )
 
@@ -23,30 +23,31 @@ foreach ($url in $Urls) {
         if ($url -like 'https://*') {
             $uri = [System.Uri]$url
             $tcp = New-Object System.Net.Sockets.TcpClient($uri.Host, $uri.Port)
-            $sslStream = New-Object System.Net.Security.SslStream($tcp.GetStream(), $false, ({$true}))
+            $sslStream = New-Object System.Net.Security.SslStream($tcp.GetStream(), $false, ({ $true }))
             $sslStream.AuthenticateAsClient($uri.Host)
             $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2 $sslStream.RemoteCertificate
             $ssl = [PSCustomObject]@{
-                Issuer = $cert.Issuer
-                Subject = $cert.Subject
+                Issuer     = $cert.Issuer
+                Subject    = $cert.Subject
                 Expiration = $cert.NotAfter
             }
             $sslStream.Dispose(); $tcp.Close()
         }
         $results += [PSCustomObject]@{
-            Url = $url
-            StatusCode = $resp.StatusCode
-            LatencyMs = [math]::Round($sw.Elapsed.TotalMilliseconds,2)
-            SslIssuer = $ssl?.Issuer
+            Url           = $url
+            StatusCode    = $resp.StatusCode
+            LatencyMs     = [math]::Round($sw.Elapsed.TotalMilliseconds, 2)
+            SslIssuer     = $ssl?.Issuer
             SslExpiration = $ssl?.Expiration
         }
-    } catch {
+    }
+    catch {
         $sw.Stop()
         $results += [PSCustomObject]@{
-            Url = $url
-            StatusCode = 'Error'
-            LatencyMs = [math]::Round($sw.Elapsed.TotalMilliseconds,2)
-            SslIssuer = ''
+            Url           = $url
+            StatusCode    = 'Error'
+            LatencyMs     = [math]::Round($sw.Elapsed.TotalMilliseconds, 2)
+            SslIssuer     = ''
             SslExpiration = ''
         }
     }

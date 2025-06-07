@@ -18,9 +18,11 @@ if (Test-Path 'test_bandwidth_out.csv') {
     $results = Import-Csv 'test_bandwidth_out.csv'
     if ($results.Adapter -and $results.Rx_Mbps) {
         Write-Host 'Bandwidth monitor test passed.'
-    } else {
+    }
+    else {
         Write-Host 'Bandwidth monitor test failed: missing data.'
     }
-} else {
+}
+else {
     Write-Host 'Bandwidth monitor test failed: missing file.'
 }

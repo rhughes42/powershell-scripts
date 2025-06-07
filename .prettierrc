@@ -1,0 +1,30 @@
+{
+	"tabWidth": 4,
+	"useTabs": true,
+	"printWidth": 120,
+	"singleQuote": true,
+	"proseWrap": "always",
+	"endOfLine": "lf",
+	"overrides": [
+		{
+			"files": "*.json",
+			"options": {
+				"parser": "json",
+				"tabWidth": 2,
+				"useTabs": false
+			}
+		},
+		{
+			"files": "*.md",
+			"options": {
+				"proseWrap": "preserve"
+			}
+		}
+	],
+	"insertPragma": false,
+	"requirePragma": false,
+	"arrowParens": "always",
+	"trailingComma": "es5",
+	"bracketSpacing": true,
+	"semi": true
+}

@@ -19,7 +19,7 @@ param(
 function Get-ProcessTree($rootName) {
     $root = Get-Process -Name $rootName -ErrorAction SilentlyContinue
     if (-not $root) { return @() }
-    $all = Get-Process | Select-Object Id,Name,Parent
+    $all = Get-Process | Select-Object Id, Name, Parent
     $tree = @($root)
     $children = $all | Where-Object { $_.Parent -eq $root.Id }
     foreach ($child in $children) {
@@ -38,10 +38,10 @@ while ($true) {
     foreach ($p in $procs) {
         $results += [PSCustomObject]@{
             Timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-            Name = $p.Name
-            Id = $p.Id
-            CPU = $p.CPU
-            WS_MB = [math]::Round($p.WorkingSet/1MB,2)
+            Name      = $p.Name
+            Id        = $p.Id
+            CPU       = $p.CPU
+            WS_MB     = [math]::Round($p.WorkingSet / 1MB, 2)
         }
     }
     $results | Export-Csv -Path $OutputCsv -NoTypeInformation

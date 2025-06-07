@@ -13,14 +13,16 @@ Computational Analysis & Geometry · Applied AI · Robotics
 .DESCRIPTION
     Runs the HTTP endpoint test script and checks for expected output and status codes.
 #>
-& ../network/test-http-endpoints.ps1 -Urls @('https://www.microsoft.com','https://expired.badssl.com') -OutputCsv 'test_http_out.csv'
+& ../network/test-http-endpoints.ps1 -Urls @('https://www.microsoft.com', 'https://expired.badssl.com') -OutputCsv 'test_http_out.csv'
 if (Test-Path 'test_http_out.csv') {
     $results = Import-Csv 'test_http_out.csv'
     if ($results | Where-Object { $_.StatusCode -eq 200 }) {
         Write-Host 'HTTP endpoint test passed.'
-    } else {
+    }
+    else {
         Write-Host 'HTTP endpoint test failed: no 200 status.'
     }
-} else {
+}
+else {
     Write-Host 'HTTP endpoint test failed: missing file.'
 }

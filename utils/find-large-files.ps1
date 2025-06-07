@@ -26,7 +26,7 @@ param(
 )
 
 $files = Get-ChildItem -Path $Path -Recurse -File -ErrorAction SilentlyContinue |
-    Where-Object { $_.Length -ge ($MinSizeMB * 1MB) }
+Where-Object { $_.Length -ge ($MinSizeMB * 1MB) }
 $results = $files | Select-Object FullName, Length, LastWriteTime | Sort-Object Length -Descending
 $results | Format-Table -AutoSize
 $results | Export-Csv -Path $OutputCsv -NoTypeInformation

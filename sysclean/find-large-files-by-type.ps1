@@ -14,11 +14,11 @@
 #>
 param(
     [string]$RootPath = 'C:\',
-    [string[]]$Extensions = @('.log','.mp4','.zip'),
+    [string[]]$Extensions = @('.log', '.mp4', '.zip'),
     [int]$MinSizeMB = 100,
     [string]$OutputCsv = 'LargeFilesByType.csv'
 )
 
-$files = Get-ChildItem -Path $RootPath -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $Extensions -contains $_.Extension -and $_.Length -ge ($MinSizeMB*1MB) }
+$files = Get-ChildItem -Path $RootPath -Recurse -File -ErrorAction SilentlyContinue | Where-Object { $Extensions -contains $_.Extension -and $_.Length -ge ($MinSizeMB * 1MB) }
 $files | Select-Object FullName, Length, LastWriteTime | Export-Csv -Path $OutputCsv -NoTypeInformation
 $files | Format-Table -AutoSize FullName, Length, LastWriteTime

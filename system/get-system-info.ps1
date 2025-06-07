@@ -23,8 +23,8 @@ $info = [PSCustomObject]@{
     ComputerName = $env:COMPUTERNAME
     OS           = (Get-CimInstance Win32_OperatingSystem).Caption
     CPU          = (Get-CimInstance Win32_Processor).Name
-    MemoryGB     = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory/1GB,2)
-    DiskGB       = [math]::Round((Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'").Size/1GB,2)
+    MemoryGB     = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 2)
+    DiskGB       = [math]::Round((Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'").Size / 1GB, 2)
 }
 $info | Format-List
 $info | Export-Csv -Path $OutputCsv -NoTypeInformation
