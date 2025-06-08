@@ -1,4 +1,14 @@
 <#
+ ▄▄ • ▄▄▄   ▄▄▄·  ▄▄▄· ▄ .▄
+▐█ ▀ ▪▀▄ █·▐█ ▀█ ▐█ ▄███▪▐█
+▄█ ▀█▄▐▀▀▄ ▄█▀▀█  ██▀·██▀▐█
+▐█▄▪▐█▐█•█▌▐█ ▪▐▌▐█▪·•██▌▐▀
+·▀▀▀▀ .▀  ▀ ▀  ▀ .▀   ▀▀▀ ·
+
+Graph Technologies · https://graphtechnologies.xyz/
+Computational Analysis & Geometry · Applied AI · Robotics
+#>
+<#
 .SYNOPSIS
     Audit installed software and versions on Windows.
 .DESCRIPTION

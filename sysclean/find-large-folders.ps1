@@ -1,4 +1,14 @@
 <#
+ ▄▄ • ▄▄▄   ▄▄▄·  ▄▄▄· ▄ .▄
+▐█ ▀ ▪▀▄ █·▐█ ▀█ ▐█ ▄███▪▐█
+▄█ ▀█▄▐▀▀▄ ▄█▀▀█  ██▀·██▀▐█
+▐█▄▪▐█▐█•█▌▐█ ▪▐▌▐█▪·•██▌▐▀
+·▀▀▀▀ .▀  ▀ ▀  ▀ .▀   ▀▀▀ ·
+
+Graph Technologies · https://graphtechnologies.xyz/
+Computational Analysis & Geometry · Applied AI · Robotics
+#>
+<#
 .SYNOPSIS
     Find large folders under a given path.
 .DESCRIPTION

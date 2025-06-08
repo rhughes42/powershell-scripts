@@ -1,4 +1,14 @@
 <#
+ ▄▄ • ▄▄▄   ▄▄▄·  ▄▄▄· ▄ .▄
+▐█ ▀ ▪▀▄ █·▐█ ▀█ ▐█ ▄███▪▐█
+▄█ ▀█▄▐▀▀▄ ▄█▀▀█  ██▀·██▀▐█
+▐█▄▪▐█▐█•█▌▐█ ▪▐▌▐█▪·•██▌▐▀
+·▀▀▀▀ .▀  ▀ ▀  ▀ .▀   ▀▀▀ ·
+
+Graph Technologies · https://graphtechnologies.xyz/
+Computational Analysis & Geometry · Applied AI · Robotics
+#>
+<#
 .SYNOPSIS
     Scan the Windows Recycle Bin for file count and size.
 .DESCRIPTION
