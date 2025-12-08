@@ -33,15 +33,26 @@ param(
     [string]$OutputCsv = 'CpuMemMonitor.csv'
 )
 
+# Calculate monitoring end time
 $end = (Get-Date).AddSeconds($DurationSeconds)
 $results = @()
+
+# Continuous monitoring loop until duration expires
 while ((Get-Date) -lt $end) {
+    # Query Windows Performance Counters for CPU usage (all cores combined)
     $cpu = (Get-Counter '\Processor(_Total)\% Processor Time').CounterSamples[0].CookedValue
+    # Query memory usage as percentage of committed bytes
     $mem = (Get-Counter '\Memory\% Committed Bytes In Use').CounterSamples[0].CookedValue
     $now = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+    
+    # Alert when thresholds are exceeded
     if ($cpu -ge $CpuThreshold) { Write-Host "[ALERT] CPU usage high: $([math]::Round($cpu,2))% at $now" -ForegroundColor Red }
     if ($mem -ge $MemoryThreshold) { Write-Host "[ALERT] Memory usage high: $([math]::Round($mem,2))% at $now" -ForegroundColor Red }
+    
+    # Store sample data for export
     $results += [PSCustomObject]@{ Timestamp = $now; CpuPercent = [math]::Round($cpu, 2); MemoryPercent = [math]::Round($mem, 2) }
+    
+    # Wait for next sampling interval
     Start-Sleep -Seconds $IntervalSeconds
 }
 $results | Format-Table -AutoSize

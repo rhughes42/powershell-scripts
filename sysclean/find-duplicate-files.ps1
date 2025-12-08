@@ -24,14 +24,23 @@ param(
     [string]$OutputCsv = 'DuplicateFiles.csv'
 )
 
+# Recursively scan all files under the root path
 $files = Get-ChildItem -Path $RootPath -Recurse -File -ErrorAction SilentlyContinue
 $hashes = @{}
+
+# Calculate hash for each file and group by hash value
 foreach ($file in $files) {
     $hash = (Get-FileHash $file.FullName -Algorithm SHA256).Hash
+    # Initialize array for this hash if not exists
     if (-not $hashes.ContainsKey($hash)) { $hashes[$hash] = @() }
+    # Add file path to the hash group
     $hashes[$hash] += $file.FullName
 }
+
+# Filter to only hashes that have more than one file (duplicates)
 $dupes = $hashes.GetEnumerator() | Where-Object { $_.Value.Count -gt 1 }
+
+# Flatten the duplicate groups into individual records for export
 $results = @()
 foreach ($d in $dupes) {
     foreach ($f in $d.Value) {
