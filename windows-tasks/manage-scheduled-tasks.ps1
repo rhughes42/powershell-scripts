@@ -80,9 +80,20 @@ function New-PowerShellScheduledTask {
         return
     }
     
+    # Find PowerShell 7+ executable
+    $pwshPath = (Get-Command pwsh -ErrorAction SilentlyContinue).Source
+    if (-not $pwshPath) {
+        # Fallback to common installation path
+        $pwshPath = "C:\Program Files\PowerShell\7\pwsh.exe"
+        if (-not (Test-Path $pwshPath)) {
+            Write-Error "PowerShell 7+ (pwsh.exe) not found. Please ensure PowerShell 7+ is installed."
+            return
+        }
+    }
+    
     # Build PowerShell action to execute the script
     $actionArgs = "-NoProfile -ExecutionPolicy Bypass -File `"$Script`""
-    $action = New-ScheduledTaskAction -Execute "pwsh.exe" -Argument $actionArgs
+    $action = New-ScheduledTaskAction -Execute $pwshPath -Argument $actionArgs
     
     # Create trigger based on type
     $triggerObj = switch ($TriggerType) {

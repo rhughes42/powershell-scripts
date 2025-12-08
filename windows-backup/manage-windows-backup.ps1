@@ -89,6 +89,9 @@ function New-FileBackup {
         $sourceName = Split-Path $source -Leaf
         $destFolder = Join-Path $backupFolder $sourceName
         
+        # Create unique log file name with timestamp
+        $logFile = Join-Path $backupFolder "backup_$timestamp.log"
+        
         # Use robocopy for efficient copying with progress
         $robocopyArgs = @(
             $source,
@@ -100,7 +103,7 @@ function New-FileBackup {
             '/NP',            # No progress percentage
             '/NDL',           # No directory list
             '/NFL',           # No file list
-            '/LOG+:backup.log'
+            "/LOG+:$logFile"
         )
         
         $startTime = Get-Date
@@ -371,18 +374,19 @@ switch ($Action) {
     'GetStatus' {
         Write-Host "=== Windows Backup Status ===" -ForegroundColor Cyan
         
-        # Check if Windows Server Backup is installed
-        $wsbFeature = Get-WindowsFeature -Name Windows-Server-Backup -ErrorAction SilentlyContinue
-        if ($wsbFeature) {
+        # Check if Windows Server Backup is installed (Server OS only)
+        try {
+            $wsbFeature = Get-WindowsFeature -Name Windows-Server-Backup -ErrorAction Stop
             Write-Host "`nWindows Server Backup: $($wsbFeature.InstallState)" -ForegroundColor Yellow
         }
-        else {
-            Write-Host "`nWindows Server Backup: Not Available (Client OS)" -ForegroundColor Yellow
+        catch {
+            # Get-WindowsFeature doesn't exist on client OS
+            Write-Host "`nWindows Server Backup: Not Available (Windows Client OS)" -ForegroundColor Yellow
         }
         
-        # Check File History status
+        # Check File History status (Client OS)
         try {
-            $fhConfig = Get-WmiObject -Namespace root\Microsoft\Windows\FileHistory -Class MSFT_FileHistoryConfig -ErrorAction SilentlyContinue
+            $fhConfig = Get-CimInstance -Namespace root\Microsoft\Windows\FileHistory -ClassName MSFT_FileHistoryConfig -ErrorAction SilentlyContinue
             if ($fhConfig) {
                 Write-Host "File History: Enabled" -ForegroundColor Yellow
                 Write-Host "  Target: $($fhConfig.TargetUrl)" -ForegroundColor Cyan

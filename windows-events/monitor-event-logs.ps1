@@ -135,10 +135,14 @@ function Watch-EventLog {
                         Write-Host "Event ID $($event.Id) - $($event.ProviderName)"
                         
                         # Show truncated message
-                        $truncatedMsg = if ($event.Message.Length -gt 100) {
-                            $event.Message.Substring(0, 100) + "..."
+                        if ($event.Message) {
+                            $truncatedMsg = if ($event.Message.Length -gt 100) {
+                                $event.Message.Substring(0, 100) + "..."
+                            } else {
+                                $event.Message
+                            }
                         } else {
-                            $event.Message
+                            $truncatedMsg = "(No message)"
                         }
                         Write-Host "  $truncatedMsg" -ForegroundColor Gray
                     }
@@ -207,7 +211,13 @@ function Search-EventLog {
         
         # Convert to custom objects
         $results = $events | Select-Object TimeCreated, LevelDisplayName, Id, ProviderName, 
-                                          @{N='Message';E={$_.Message.Substring(0, [Math]::Min(200, $_.Message.Length)) + '...'}}
+                                          @{N='Message';E={
+                                              if ($_.Message -and $_.Message.Length -gt 200) {
+                                                  $_.Message.Substring(0, 200) + '...'
+                                              } else {
+                                                  $_.Message
+                                              }
+                                          }}
         
         return $results
     }

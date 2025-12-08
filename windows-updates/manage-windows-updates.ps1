@@ -246,7 +246,7 @@ switch ($Action) {
             # Filter by update type if specified
             if ($UpdateType -ne 'All') {
                 $params['Criteria'] = switch ($UpdateType) {
-                    'Security' { "IsInstalled=0 and Type='Software' and MsrcSeverity='Critical'" }
+                    'Security' { "IsInstalled=0 and Type='Software' and (MsrcSeverity='Critical' or MsrcSeverity='Important')" }
                     'Critical' { "IsInstalled=0 and Type='Software' and MsrcSeverity='Critical'" }
                     'Optional' { "IsInstalled=0 and Type='Software' and IsMandatory=0" }
                 }

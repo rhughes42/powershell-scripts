@@ -73,8 +73,12 @@ function Get-DefenderStatus {
         Write-Host "`nScan Information:" -ForegroundColor Yellow
         Write-Host "  Last Quick Scan: $($status.QuickScanEndTime)"
         Write-Host "  Last Full Scan: $($status.FullScanEndTime)"
-        Write-Host "  Days Since Last Quick Scan: $((Get-Date) - $status.QuickScanEndTime).Days"
-        Write-Host "  Days Since Last Full Scan: $((Get-Date) - $status.FullScanEndTime).Days"
+        if ($status.QuickScanEndTime) {
+            Write-Host "  Days Since Last Quick Scan: $((Get-Date) - $status.QuickScanEndTime).Days"
+        }
+        if ($status.FullScanEndTime) {
+            Write-Host "  Days Since Last Full Scan: $((Get-Date) - $status.FullScanEndTime).Days"
+        }
         
         Write-Host "`nThreat Detection:" -ForegroundColor Yellow
         Write-Host "  Computer State: $($status.ComputerState)"
