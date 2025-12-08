@@ -1,6 +1,30 @@
 # Graph PowerShell Scripts
 
+[![Test PowerShell Scripts](https://github.com/rhughes42/powershell-scripts/actions/workflows/test-powershell-scripts.yml/badge.svg)](https://github.com/rhughes42/powershell-scripts/actions/workflows/test-powershell-scripts.yml)
+[![Run Test Suite](https://github.com/rhughes42/powershell-scripts/actions/workflows/run-test-suite.yml/badge.svg)](https://github.com/rhughes42/powershell-scripts/actions/workflows/run-test-suite.yml)
+
 This repository is organized for the development, organization, and testing of PowerShell 7+ scripts by Graph Technologies.
+
+## Repository Structure
+
+```
+powershell-scripts/
+├── cloud/                    # Cloud platform management (AWS, Azure, GCP)
+├── network/                  # Network diagnostics and connectivity
+├── system/                   # System information and monitoring
+├── sysclean/                 # System cleanup utilities
+├── utils/                    # General utility scripts
+├── windows-backup/           # Automated backup management
+├── windows-defender/         # Antivirus control and scanning
+├── windows-events/           # Event log monitoring and alerts
+├── windows-firewall/         # Firewall rule management
+├── windows-registry/         # Registry operations and monitoring
+├── windows-services/         # Service management and monitoring
+├── windows-tasks/            # Scheduled task automation
+├── windows-updates/          # Windows Update management
+├── tests/                    # Test scripts and validation
+└── docs/                     # Documentation and guides
+```
 
 ## Structure
 

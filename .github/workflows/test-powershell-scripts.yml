@@ -1,0 +1,404 @@
+name: Test PowerShell Scripts
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  syntax-check:
+    name: Syntax Validation
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate PowerShell syntax
+        shell: pwsh
+        run: |
+          Write-Host "Validating PowerShell script syntax..."
+          $errors = @()
+          $scripts = Get-ChildItem -Path . -Filter "*.ps1" -Recurse -File
+          
+          foreach ($script in $scripts) {
+            Write-Host "Checking: $($script.FullName)"
+            $parseErrors = $null
+            $null = [System.Management.Automation.PSParser]::Tokenize((Get-Content $script.FullName -Raw), [ref]$parseErrors)
+            
+            if ($parseErrors.Count -gt 0) {
+              Write-Host "❌ Syntax errors in $($script.FullName):" -ForegroundColor Red
+              $parseErrors | ForEach-Object { Write-Host "  $_" -ForegroundColor Red }
+              $errors += $script.FullName
+            } else {
+              Write-Host "✓ $($script.Name) - OK" -ForegroundColor Green
+            }
+          }
+          
+          if ($errors.Count -gt 0) {
+            Write-Host "`n❌ Syntax validation failed for $($errors.Count) file(s)" -ForegroundColor Red
+            exit 1
+          } else {
+            Write-Host "`n✓ All PowerShell scripts passed syntax validation" -ForegroundColor Green
+          }
+
+  test-network-scripts:
+    name: Test Network Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test DNS functionality
+        shell: pwsh
+        run: |
+          Write-Host "Testing DNS script..."
+          & ./network/test-dns.ps1 -Hosts @('8.8.8.8', '1.1.1.1')
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ DNS test passed" -ForegroundColor Green
+          }
+
+      - name: Test HTTP endpoints
+        shell: pwsh
+        run: |
+          Write-Host "Testing HTTP endpoints script..."
+          & ./network/test-http-endpoints.ps1 -Endpoints @('https://www.google.com', 'https://www.github.com')
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ HTTP endpoints test passed" -ForegroundColor Green
+          }
+
+      - name: Test port scanning
+        shell: pwsh
+        run: |
+          Write-Host "Testing port scan script..."
+          & ./network/scan-open-ports.ps1 -Target '127.0.0.1' -Ports @(80, 443, 22) -TimeoutSeconds 1
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Port scan test passed" -ForegroundColor Green
+          }
+
+  test-system-scripts:
+    name: Test System Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test system info script
+        shell: pwsh
+        run: |
+          Write-Host "Testing system info script..."
+          $output = & ./system/get-system-info.ps1
+          if ($output) {
+            Write-Host "✓ System info test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ System info test failed" -ForegroundColor Red
+            exit 1
+          }
+
+      - name: Test process monitoring
+        shell: pwsh
+        run: |
+          Write-Host "Testing process monitoring..."
+          $output = & ./system/monitor-process-tree.ps1
+          if ($output) {
+            Write-Host "✓ Process monitoring test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Process monitoring test failed" -ForegroundColor Red
+            exit 1
+          }
+
+      - name: Test software audit
+        shell: pwsh
+        run: |
+          Write-Host "Testing software audit..."
+          $output = & ./system/audit-installed-software.ps1
+          if ($output) {
+            Write-Host "✓ Software audit test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Software audit test failed" -ForegroundColor Red
+            exit 1
+          }
+
+  test-sysclean-scripts:
+    name: Test System Cleanup Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create test directory structure
+        shell: pwsh
+        run: |
+          $testDir = "$env:TEMP\sysclean-test"
+          New-Item -ItemType Directory -Path $testDir -Force
+          # Create test files
+          "test content" | Out-File "$testDir\file1.txt"
+          "test content" | Out-File "$testDir\file2.txt"
+          "different" | Out-File "$testDir\file3.txt"
+          New-Item -ItemType Directory -Path "$testDir\empty" -Force
+          New-Item -ItemType Directory -Path "$testDir\nonempty" -Force
+          "data" | Out-File "$testDir\nonempty\data.txt"
+
+      - name: Test find duplicate files
+        shell: pwsh
+        run: |
+          Write-Host "Testing duplicate files finder..."
+          $testDir = "$env:TEMP\sysclean-test"
+          & ./sysclean/find-duplicate-files.ps1 -RootPath $testDir
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Duplicate files test passed" -ForegroundColor Green
+          }
+
+      - name: Test find empty folders
+        shell: pwsh
+        run: |
+          Write-Host "Testing empty folders finder..."
+          $testDir = "$env:TEMP\sysclean-test"
+          & ./sysclean/find-empty-folders.ps1 -RootPath $testDir
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Empty folders test passed" -ForegroundColor Green
+          }
+
+      - name: Test find large files
+        shell: pwsh
+        run: |
+          Write-Host "Testing large files finder..."
+          $testDir = "$env:TEMP\sysclean-test"
+          & ./sysclean/find-large-files-by-type.ps1 -RootPath $testDir -MinSizeMB 0
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Large files test passed" -ForegroundColor Green
+          }
+
+  test-utils-scripts:
+    name: Test Utility Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test write-log utility
+        shell: pwsh
+        run: |
+          Write-Host "Testing write-log utility..."
+          . ./utils/write-log.ps1
+          $testLog = "$env:TEMP\test-log.txt"
+          Write-Log -Message "Test message" -LogPath $testLog -Level "INFO"
+          if (Test-Path $testLog) {
+            $content = Get-Content $testLog
+            if ($content -match "Test message") {
+              Write-Host "✓ Write-log test passed" -ForegroundColor Green
+            } else {
+              Write-Host "❌ Write-log test failed: content mismatch" -ForegroundColor Red
+              exit 1
+            }
+          } else {
+            Write-Host "❌ Write-log test failed: log file not created" -ForegroundColor Red
+            exit 1
+          }
+
+      - name: Test find-large-files utility
+        shell: pwsh
+        run: |
+          Write-Host "Testing find-large-files utility..."
+          & ./utils/find-large-files.ps1 -Path $env:TEMP -MinSizeMB 0 -TopN 5
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Find-large-files test passed" -ForegroundColor Green
+          }
+
+  test-windows-services:
+    name: Test Windows Services Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test list Windows services
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows services management..."
+          & ./windows-services/manage-windows-services.ps1 -Action List
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Windows services list test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Windows services test failed" -ForegroundColor Red
+            exit 1
+          }
+
+      - name: Test monitor critical services
+        shell: pwsh
+        run: |
+          Write-Host "Testing critical services monitoring..."
+          & ./windows-services/monitor-critical-services.ps1 -ServiceNames @("Winmgmt") -CheckOnce
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Critical services monitoring test passed" -ForegroundColor Green
+          }
+
+  test-windows-firewall:
+    name: Test Windows Firewall Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test list firewall rules
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows Firewall management..."
+          & ./windows-firewall/manage-windows-firewall.ps1 -Action List
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Windows Firewall list test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Windows Firewall test failed" -ForegroundColor Red
+            exit 1
+          }
+
+  test-windows-defender:
+    name: Test Windows Defender Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test Windows Defender status
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows Defender management..."
+          & ./windows-defender/manage-windows-defender.ps1 -Action Status
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Windows Defender status test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Windows Defender test failed" -ForegroundColor Red
+            exit 1
+          }
+
+  test-windows-events:
+    name: Test Windows Event Log Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test event log query
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows Event Log monitoring..."
+          & ./windows-events/monitor-event-logs.ps1 -Action Query -LogName System -MaxEvents 10
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Event log query test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Event log test failed" -ForegroundColor Red
+            exit 1
+          }
+
+  test-windows-updates:
+    name: Test Windows Updates Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test Windows Update check
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows Update management..."
+          & ./windows-updates/manage-windows-updates.ps1 -Action Check
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Windows Update check test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Windows Update test failed" -ForegroundColor Red
+            exit 1
+          }
+
+  test-windows-registry:
+    name: Test Windows Registry Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test registry search
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows Registry management..."
+          & ./windows-registry/manage-windows-registry.ps1 -Action Search -SearchTerm "PowerShell" -KeyPath "HKLM:\SOFTWARE"
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Registry search test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Registry test failed" -ForegroundColor Red
+            exit 1
+          }
+
+  test-windows-tasks:
+    name: Test Windows Scheduled Tasks Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test list scheduled tasks
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows Scheduled Tasks management..."
+          & ./windows-tasks/manage-scheduled-tasks.ps1 -Action List
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Scheduled tasks list test passed" -ForegroundColor Green
+          } else {
+            Write-Host "❌ Scheduled tasks test failed" -ForegroundColor Red
+            exit 1
+          }
+
+  test-windows-backup:
+    name: Test Windows Backup Scripts
+    runs-on: windows-latest
+    needs: syntax-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test backup verification
+        shell: pwsh
+        run: |
+          Write-Host "Testing Windows Backup management..."
+          $testBackup = "$env:TEMP\test-backup"
+          New-Item -ItemType Directory -Path $testBackup -Force
+          & ./windows-backup/manage-windows-backup.ps1 -Action VerifyBackup -BackupPath $testBackup
+          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
+            Write-Host "✓ Backup verification test passed" -ForegroundColor Green
+          }
+
+  test-suite-summary:
+    name: Test Suite Summary
+    runs-on: windows-latest
+    needs:
+      - syntax-check
+      - test-network-scripts
+      - test-system-scripts
+      - test-sysclean-scripts
+      - test-utils-scripts
+      - test-windows-services
+      - test-windows-firewall
+      - test-windows-defender
+      - test-windows-events
+      - test-windows-updates
+      - test-windows-registry
+      - test-windows-tasks
+      - test-windows-backup
+    steps:
+      - name: Summary
+        shell: pwsh
+        run: |
+          Write-Host "`n========================================" -ForegroundColor Cyan
+          Write-Host "✓ All PowerShell Script Tests Passed!" -ForegroundColor Green
+          Write-Host "========================================`n" -ForegroundColor Cyan
