@@ -32,8 +32,10 @@ Computational Analysis & Geometry · Applied AI · Robotics
 #>
 function Get-FileHashTable($dir) {
     $table = @{}
+    # Recursively get all files and compute their SHA256 hashes
     Get-ChildItem -Path $dir -Recurse -File | ForEach-Object {
         $hash = Get-FileHash $_.FullName -Algorithm SHA256
+        # Store relative path as key for comparison (strips root directory)
         $rel = $_.FullName.Substring($dir.Length).TrimStart('\', '/')
         $table[$rel] = $hash.Hash
     }
@@ -46,14 +48,20 @@ param(
     [string]$OutputCsv = 'DirHashCompare.csv'
 )
 
+# Build hash tables for both directories
 $hashA = Get-FileHashTable $PathA
 $hashB = Get-FileHashTable $PathB
+
+# Get union of all file paths from both directories
 $allKeys = $hashA.Keys + $hashB.Keys | Sort-Object -Unique
+
+# Compare each file and determine status
 $results = foreach ($key in $allKeys) {
     [PSCustomObject]@{
         File   = $key
         HashA  = $hashA[$key]
         HashB  = $hashB[$key]
+        # Classify file status: Match, Different, OnlyInA, or OnlyInB
         Status = if ($hashA[$key] -and $hashB[$key]) {
             if ($hashA[$key] -eq $hashB[$key]) { 'Match' } else { 'Different' }
         }

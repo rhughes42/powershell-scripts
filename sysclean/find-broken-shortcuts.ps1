@@ -23,11 +23,18 @@ param(
     [string]$OutputCsv = 'BrokenShortcuts.csv'
 )
 
+# Find all .lnk (shortcut) files recursively
 $lnks = Get-ChildItem -Path $RootPath -Recurse -Filter '*.lnk' -ErrorAction SilentlyContinue
+
+# Create Windows Script Host Shell COM object to read shortcut properties
 $shell = New-Object -ComObject WScript.Shell
 $results = @()
+
+# Check each shortcut to see if its target still exists
 foreach ($lnk in $lnks) {
+    # Read the target path from the shortcut
     $target = $shell.CreateShortcut($lnk.FullName).TargetPath
+    # Test if the target file or directory exists
     if (-not (Test-Path $target)) {
         $results += [PSCustomObject]@{ Shortcut = $lnk.FullName; Target = $target }
     }
