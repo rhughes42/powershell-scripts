@@ -26,7 +26,7 @@ powershell-scripts/
 └── docs/                     # Documentation and guides
 ```
 
-## Structure
+## Directory Overview
 
 ### Core Scripts
 - `network/` — Scripts for network diagnostics, connectivity, and related utilities.
