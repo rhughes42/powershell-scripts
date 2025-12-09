@@ -20,6 +20,12 @@ Computational Analysis & Geometry · Applied AI · Robotics
     Path to export results.
 #>
 
+param(
+    [string]$Target = '127.0.0.1',
+    [int[]]$Ports = @(22, 80, 443, 3389),
+    [string]$OutputCsv = 'PortScanResults.csv'
+)
+
 <#
 .SYNOPSIS
     Test if a TCP port is open on a host.
@@ -50,12 +56,6 @@ function Test-Port {
     }
     catch { return $false }
 }
-
-param(
-    [string]$Target = '127.0.0.1',
-    [int[]]$Ports = @(22, 80, 443, 3389),
-    [string]$OutputCsv = 'PortScanResults.csv'
-)
 
 $results = @()
 # Scan each port in the list
