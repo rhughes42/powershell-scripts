@@ -11,9 +11,64 @@ permissions:
   contents: read
 
 jobs:
+  lint:
+    name: Lint and Syntax Check
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Write-Host "Installing PSScriptAnalyzer..." -ForegroundColor Cyan
+          Install-Module -Name PSScriptAnalyzer -Force -Scope CurrentUser -SkipPublisherCheck
+          Write-Host "✓ PSScriptAnalyzer installed successfully" -ForegroundColor Green
+
+      - name: Scan for reserved variable shadowing
+        shell: pwsh
+        run: |
+          Write-Host "Scanning for reserved variable issues..." -ForegroundColor Cyan
+          & .github/scripts/scan-reserved-vars.ps1 -Path . -ExitOnError
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ Reserved variable scan failed" -ForegroundColor Red
+            exit 1
+          }
+          Write-Host "✓ Reserved variable scan passed" -ForegroundColor Green
+
+      - name: Run PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Write-Host "Running PSScriptAnalyzer..." -ForegroundColor Cyan
+          $results = @()
+          $scripts = Get-ChildItem -Path . -Filter "*.ps1" -Recurse -File | Where-Object { $_.FullName -notmatch '[\\/]\.git[\\/]' }
+          
+          foreach ($script in $scripts) {
+            $findings = Invoke-ScriptAnalyzer -Path $script.FullName -Severity Warning,Error
+            if ($findings) {
+              $results += $findings
+              Write-Host "Issues in $($script.FullName):" -ForegroundColor Yellow
+              $findings | ForEach-Object {
+                Write-Host "  [$($_.Severity)] Line $($_.Line): $($_.Message)" -ForegroundColor $(if ($_.Severity -eq 'Error') { 'Red' } else { 'Yellow' })
+              }
+            }
+          }
+          
+          if ($results.Count -gt 0) {
+            Write-Host "`n❌ PSScriptAnalyzer found $($results.Count) issue(s)" -ForegroundColor Red
+            # Don't fail on warnings, only on errors
+            $errors = $results | Where-Object { $_.Severity -eq 'Error' }
+            if ($errors.Count -gt 0) {
+              exit 1
+            }
+          } else {
+            Write-Host "✓ PSScriptAnalyzer passed - no issues found" -ForegroundColor Green
+          }
+
   run-tests:
     name: Execute Test Scripts
     runs-on: windows-latest
+    needs: lint
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,54 +76,56 @@ jobs:
       - name: Run sample test
         shell: pwsh
         run: |
-          Write-Host "Running sample test..."
+          Write-Host "Running sample test..." -ForegroundColor Cyan
           cd tests
-          & ./sample-test.ps1
-          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
-            Write-Host "✓ Sample test passed" -ForegroundColor Green
-          } else {
-            Write-Host "❌ Sample test failed" -ForegroundColor Red
+          & pwsh -File ./sample-test.ps1
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ Sample test failed with exit code $LASTEXITCODE" -ForegroundColor Red
             exit 1
           }
 
       - name: Run network test suite
         shell: pwsh
         run: |
-          Write-Host "Running network test suite..."
+          Write-Host "Running network test suite..." -ForegroundColor Cyan
           cd tests
-          & ./test-network-suite.ps1
-          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
-            Write-Host "✓ Network test suite passed" -ForegroundColor Green
+          & pwsh -File ./test-network-suite.ps1
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ Network test suite failed with exit code $LASTEXITCODE" -ForegroundColor Red
+            exit 1
           }
 
       - name: Run HTTP endpoints test
         shell: pwsh
         run: |
-          Write-Host "Running HTTP endpoints test..."
+          Write-Host "Running HTTP endpoints test..." -ForegroundColor Cyan
           cd tests
-          & ./test-http-endpoints.ps1
-          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
-            Write-Host "✓ HTTP endpoints test passed" -ForegroundColor Green
+          & pwsh -File ./test-http-endpoints.ps1
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ HTTP endpoints test failed with exit code $LASTEXITCODE" -ForegroundColor Red
+            exit 1
           }
 
       - name: Run bandwidth monitor test
         shell: pwsh
         run: |
-          Write-Host "Running bandwidth monitor test..."
+          Write-Host "Running bandwidth monitor test..." -ForegroundColor Cyan
           cd tests
-          & ./test-bandwidth-monitor.ps1
-          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
-            Write-Host "✓ Bandwidth monitor test passed" -ForegroundColor Green
+          & pwsh -File ./test-bandwidth-monitor.ps1
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ Bandwidth monitor test failed with exit code $LASTEXITCODE" -ForegroundColor Red
+            exit 1
           }
 
       - name: Run system audit test
         shell: pwsh
         run: |
-          Write-Host "Running system audit test..."
+          Write-Host "Running system audit test..." -ForegroundColor Cyan
           cd tests
-          & ./test-system-audit.ps1
-          if ($LASTEXITCODE -eq 0 -or $null -eq $LASTEXITCODE) {
-            Write-Host "✓ System audit test passed" -ForegroundColor Green
+          & pwsh -File ./test-system-audit.ps1
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "❌ System audit test failed with exit code $LASTEXITCODE" -ForegroundColor Red
+            exit 1
           }
 
       - name: Test summary

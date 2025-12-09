@@ -17,12 +17,15 @@ Computational Analysis & Geometry · Applied AI · Robotics
 if (Test-Path 'test_bandwidth_out.csv') {
     $results = Import-Csv 'test_bandwidth_out.csv'
     if ($results.Adapter -and $results.Rx_Mbps) {
-        Write-Host 'Bandwidth monitor test passed.'
+        Write-Host '✓ Bandwidth monitor test passed: Output file contains expected data' -ForegroundColor Green
+        exit 0
     }
     else {
-        Write-Host 'Bandwidth monitor test failed: missing data.'
+        Write-Host '❌ Bandwidth monitor test failed: Missing required data columns' -ForegroundColor Red
+        exit 1
     }
 }
 else {
-    Write-Host 'Bandwidth monitor test failed: missing file.'
+    Write-Host '❌ Bandwidth monitor test failed: Output file not created' -ForegroundColor Red
+    exit 1
 }

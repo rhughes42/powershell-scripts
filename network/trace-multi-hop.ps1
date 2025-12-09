@@ -23,16 +23,16 @@ param(
 )
 
 $results = @()
-foreach ($host in $Hosts) {
-    Write-Host "Tracing $host ..."
-    $trace = Test-NetConnection -ComputerName $host -TraceRoute
+foreach ($targetHost in $Hosts) {
+    Write-Host "Tracing $targetHost ..."
+    $trace = Test-NetConnection -ComputerName $targetHost -TraceRoute
     $hops = $trace.TraceRoute | Where-Object { $_.ResponseTime -ne $null }
     $hopCount = $hops.Count
     $maxRtt = ($hops | Measure-Object -Property ResponseTime -Maximum).Maximum
     $minRtt = ($hops | Measure-Object -Property ResponseTime -Minimum).Minimum
     $avgRtt = ($hops | Measure-Object -Property ResponseTime -Average).Average
     $results += [PSCustomObject]@{
-        Host     = $host
+        Host     = $targetHost
         HopCount = $hopCount
         MinRttMs = [math]::Round($minRtt, 2)
         MaxRttMs = [math]::Round($maxRtt, 2)
