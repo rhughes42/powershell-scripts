@@ -40,12 +40,12 @@ $patterns = @(
     @{
         Regex = 'foreach\s*\(\s*\$(' + ($reservedVars -join '|') + ')\s+in'
         Description = 'foreach loop variable shadowing'
-        Replacement = { param($match) $match -replace '\$Host', '$targetHost' -replace '\$Error', '$err' -replace '\$Input', '$inputItem' }
+        Replacement = { param($match) $match -replace '\$Host', '$targetHost' -replace '\$host', '$targetHost' -replace '\$Error', '$err' -replace '\$error', '$err' -replace '\$Input', '$inputItem' -replace '\$input', '$inputItem' }
     },
     @{
         Regex = 'param\s*\([^)]*\$(' + ($reservedVars -join '|') + ')[\s,\)]'
         Description = 'function parameter shadowing'
-        Replacement = { param($match) $match -replace '\$Host', '$TargetHost' -replace '\$Error', '$ErrorInfo' -replace '\$Input', '$InputData' }
+        Replacement = { param($match) $match -replace '\$Host', '$TargetHost' -replace '\$host', '$TargetHost' -replace '\$Error', '$ErrorInfo' -replace '\$error', '$ErrorInfo' -replace '\$Input', '$InputData' -replace '\$input', '$InputData' }
     }
 )
 
