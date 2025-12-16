@@ -207,7 +207,7 @@ function Show-PerformanceDashboard {
     Write-Host "│ Current: " -NoNewline -ForegroundColor White
     Write-Host "$($Snapshot.CpuPercent)%" -NoNewline -ForegroundColor $cpuColor
     Write-Host " │ Avg: $($Stats.AvgCpu)% │ Max: $($Stats.MaxCpu)% │ Min: $($Stats.MinCpu)%         " -ForegroundColor White
-    Write-Host "│ Top Process: $($Snapshot.TopCpuProcess) (Total CPU: $($Snapshot.TopCpuProcessCPU)s)                              " -ForegroundColor Gray
+    Write-Host "│ Top Process: $($Snapshot.TopCpuProcess) (Cumulative CPU Time: $($Snapshot.TopCpuProcessCPU)s)                              " -ForegroundColor Gray
     Write-Host "└────────────────────────────────────────────────────────────────────────────┘" -ForegroundColor White
     Write-Host ""
     

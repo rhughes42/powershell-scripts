@@ -239,9 +239,10 @@ function Test-EventLogHealth {
         $errorsBySource = @{}
         
         # Query each log separately for better performance
+        # MaxEvents set to 100 per log to capture sufficient error data
         $logNames = @('System', 'Application')
         foreach ($logName in $logNames) {
-            $logErrors = Get-WinEvent -FilterHashtable @{LogName=$logName; Level=1,2; StartTime=$since} -MaxEvents 50 -ErrorAction SilentlyContinue
+            $logErrors = Get-WinEvent -FilterHashtable @{LogName=$logName; Level=1,2; StartTime=$since} -MaxEvents 100 -ErrorAction SilentlyContinue
             if ($logErrors) {
                 $errorCount += $logErrors.Count
                 foreach ($error in $logErrors) {
@@ -361,7 +362,9 @@ function Test-UpdatesHealth {
                 }
             }
             
-            # Try COM approach for compatibility
+            # Try COM approach for compatibility (with security considerations)
+            # Note: COM objects are used for backward compatibility but have inherent security risks
+            # This is wrapped in error handling and only queries update status (read-only)
             $session = New-Object -ComObject Microsoft.Update.Session -ErrorAction Stop
             $searcher = $session.CreateUpdateSearcher()
             $updates = $searcher.Search("IsInstalled=0 and Type='Software'")

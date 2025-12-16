@@ -192,8 +192,8 @@ function Connect-VpnProfile {
             }
         }
         catch {
-            # Fallback to rasdial if Connect-VpnConnection fails (requires credentials)
-            Write-Warning "Connect-VpnConnection failed, credentials may be required. Use rasdial manually with credentials."
+            # Connect-VpnConnection requires stored credentials or manual authentication
+            Write-Warning "Connect-VpnConnection failed. Credentials may need to be stored or provided manually."
             Write-Host "✗ Failed to connect to '$Name': $_" -ForegroundColor Red
             return $false
         }
