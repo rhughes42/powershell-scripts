@@ -175,17 +175,26 @@ function Connect-VpnProfile {
             return $true
         }
         
-        rasdial $Name
-        Start-Sleep -Seconds 3
-        
-        $conn = Get-VpnConnection -Name $Name -AllUserConnection -ErrorAction Stop
-        
-        if ($conn.ConnectionStatus -eq 'Connected') {
-            Write-Host "✓ Successfully connected to '$Name'" -ForegroundColor Green
-            return $true
+        # Use native PowerShell cmdlet for better error handling
+        try {
+            Connect-VpnConnection -Name $Name -AllUserConnection -ErrorAction Stop
+            Start-Sleep -Seconds 3
+            
+            $conn = Get-VpnConnection -Name $Name -AllUserConnection -ErrorAction Stop
+            
+            if ($conn.ConnectionStatus -eq 'Connected') {
+                Write-Host "✓ Successfully connected to '$Name'" -ForegroundColor Green
+                return $true
+            }
+            else {
+                Write-Host "✗ Failed to connect to '$Name'" -ForegroundColor Red
+                return $false
+            }
         }
-        else {
-            Write-Host "✗ Failed to connect to '$Name'" -ForegroundColor Red
+        catch {
+            # Fallback to rasdial if Connect-VpnConnection fails (requires credentials)
+            Write-Warning "Connect-VpnConnection failed, credentials may be required. Use rasdial manually with credentials."
+            Write-Host "✗ Failed to connect to '$Name': $_" -ForegroundColor Red
             return $false
         }
     }
@@ -212,7 +221,8 @@ function Disconnect-VpnProfile {
             return $true
         }
         
-        rasdial $Name /disconnect
+        # Use native PowerShell cmdlet for better error handling
+        Disconnect-VpnConnection -Name $Name -AllUserConnection -Force -ErrorAction Stop
         Start-Sleep -Seconds 2
         
         $conn = Get-VpnConnection -Name $Name -AllUserConnection -ErrorAction Stop

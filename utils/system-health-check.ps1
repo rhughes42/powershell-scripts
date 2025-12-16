@@ -235,14 +235,31 @@ function Test-EventLogHealth {
     
     try {
         $since = (Get-Date).AddHours(-24)
-        $errors = Get-WinEvent -FilterHashtable @{LogName='System','Application'; Level=1,2; StartTime=$since} -MaxEvents 100 -ErrorAction SilentlyContinue
+        $errorCount = 0
+        $errorsBySource = @{}
         
-        $errorCount = if ($errors) { $errors.Count } else { 0 }
+        # Query each log separately for better performance
+        $logNames = @('System', 'Application')
+        foreach ($logName in $logNames) {
+            $logErrors = Get-WinEvent -FilterHashtable @{LogName=$logName; Level=1,2; StartTime=$since} -MaxEvents 50 -ErrorAction SilentlyContinue
+            if ($logErrors) {
+                $errorCount += $logErrors.Count
+                foreach ($error in $logErrors) {
+                    if ($errorsBySource.ContainsKey($error.ProviderName)) {
+                        $errorsBySource[$error.ProviderName]++
+                    }
+                    else {
+                        $errorsBySource[$error.ProviderName] = 1
+                    }
+                }
+            }
+        }
+        
         $status = if ($errorCount -gt 50) { 'WARNING' } elseif ($errorCount -gt 0) { 'INFO' } else { 'OK' }
         $statusColor = if ($status -eq 'OK') { 'Green' } elseif ($status -eq 'INFO') { 'Cyan' } else { 'Yellow' }
         
-        $topErrors = if ($errors) {
-            ($errors | Group-Object ProviderName | Sort-Object Count -Descending | Select-Object -First 3 | ForEach-Object { "$($_.Name): $($_.Count)" }) -join ' | '
+        $topErrors = if ($errorsBySource.Count -gt 0) {
+            ($errorsBySource.GetEnumerator() | Sort-Object Value -Descending | Select-Object -First 3 | ForEach-Object { "$($_.Key): $($_.Value)" }) -join ' | '
         } else {
             "No errors"
         }
@@ -327,11 +344,40 @@ function Test-UpdatesHealth {
     Write-Host "Checking Windows Update status..." -ForegroundColor Yellow
     
     try {
-        $session = New-Object -ComObject Microsoft.Update.Session
-        $searcher = $session.CreateUpdateSearcher()
-        $updates = $searcher.Search("IsInstalled=0 and Type='Software'")
+        # Try modern approach first using UsoClient
+        $updateSession = New-Object -TypeName PSObject
+        $pendingCount = 0
         
-        $pendingCount = $updates.Updates.Count
+        try {
+            # Check Windows Update service status
+            $wuService = Get-Service -Name wuauserv -ErrorAction Stop
+            if ($wuService.Status -ne 'Running') {
+                Write-Host "  ⚠ Windows Update service is not running" -ForegroundColor Yellow
+                return [PSCustomObject]@{ 
+                    Component = 'Windows Update'; 
+                    Status = 'INFO'; 
+                    Details = "Windows Update service is not running"; 
+                    Recommendation = "Start Windows Update service to check for updates" 
+                }
+            }
+            
+            # Try COM approach for compatibility
+            $session = New-Object -ComObject Microsoft.Update.Session -ErrorAction Stop
+            $searcher = $session.CreateUpdateSearcher()
+            $updates = $searcher.Search("IsInstalled=0 and Type='Software'")
+            $pendingCount = $updates.Updates.Count
+        }
+        catch {
+            # If COM fails, report service status instead
+            Write-Host "  ⚠ Unable to query update details, checking service only" -ForegroundColor Gray
+            return [PSCustomObject]@{ 
+                Component = 'Windows Update'; 
+                Status = 'INFO'; 
+                Details = "Service is running but update query unavailable"; 
+                Recommendation = "Check Windows Update manually via Settings" 
+            }
+        }
+        
         $status = if ($pendingCount -gt 20) { 'WARNING' } elseif ($pendingCount -gt 0) { 'INFO' } else { 'OK' }
         $statusColor = if ($status -eq 'OK') { 'Green' } elseif ($status -eq 'INFO') { 'Cyan' } else { 'Yellow' }
         
@@ -349,7 +395,7 @@ function Test-UpdatesHealth {
     }
     catch {
         Write-Host "  ⚠ Windows Update check skipped (requires permissions)" -ForegroundColor Gray
-        return [PSCustomObject]@{ Component = 'Windows Update'; Status = 'SKIPPED'; Details = "Check requires elevated permissions"; Recommendation = "" }
+        return [PSCustomObject]@{ Component = 'Windows Update'; Status = 'SKIPPED'; Details = "Check requires elevated permissions or service unavailable"; Recommendation = "" }
     }
 }
 

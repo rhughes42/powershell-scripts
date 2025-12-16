@@ -109,9 +109,16 @@ function Get-PerformanceSnapshot {
         $diskReadBps = (Get-Counter '\PhysicalDisk(_Total)\Disk Read Bytes/sec' -ErrorAction SilentlyContinue).CounterSamples[0].CookedValue
         $diskWriteBps = (Get-Counter '\PhysicalDisk(_Total)\Disk Write Bytes/sec' -ErrorAction SilentlyContinue).CounterSamples[0].CookedValue
         
-        # Network Metrics
-        $netBytesBps = (Get-Counter '\Network Interface(*)\Bytes Total/sec' -ErrorAction SilentlyContinue).CounterSamples | 
-            Measure-Object -Property CookedValue -Sum | Select-Object -ExpandProperty Sum
+        # Network Metrics - filter to physical adapters only
+        $physicalAdapters = Get-NetAdapter -Physical -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq 'Up' }
+        $netBytesBps = 0
+        if ($physicalAdapters) {
+            $netCounters = (Get-Counter '\Network Interface(*)\Bytes Total/sec' -ErrorAction SilentlyContinue).CounterSamples
+            foreach ($adapter in $physicalAdapters) {
+                $matchingCounters = $netCounters | Where-Object { $_.InstanceName -like "*$($adapter.InterfaceDescription)*" -or $_.InstanceName -eq $adapter.Name }
+                $netBytesBps += ($matchingCounters | Measure-Object -Property CookedValue -Sum).Sum
+            }
+        }
         
         # Process Metrics
         $processCount = (Get-Process).Count
@@ -129,7 +136,7 @@ function Get-PerformanceSnapshot {
             NetworkMbps = [math]::Round(($netBytesBps * 8) / 1MB, 2)
             ProcessCount = $processCount
             TopCpuProcess = $topCpuProcess.ProcessName
-            TopCpuProcessPercent = [math]::Round(($topCpuProcess.CPU / (New-TimeSpan -Seconds 1).TotalSeconds), 2)
+            TopCpuProcessCPU = [math]::Round($topCpuProcess.CPU, 2)
             TopMemProcess = $topMemProcess.ProcessName
             TopMemProcessMB = [math]::Round($topMemProcess.WorkingSet64 / 1MB, 2)
         }
@@ -200,7 +207,7 @@ function Show-PerformanceDashboard {
     Write-Host "│ Current: " -NoNewline -ForegroundColor White
     Write-Host "$($Snapshot.CpuPercent)%" -NoNewline -ForegroundColor $cpuColor
     Write-Host " │ Avg: $($Stats.AvgCpu)% │ Max: $($Stats.MaxCpu)% │ Min: $($Stats.MinCpu)%         " -ForegroundColor White
-    Write-Host "│ Top Process: $($Snapshot.TopCpuProcess) ($($Snapshot.TopCpuProcessPercent)%)                              " -ForegroundColor Gray
+    Write-Host "│ Top Process: $($Snapshot.TopCpuProcess) (Total CPU: $($Snapshot.TopCpuProcessCPU)s)                              " -ForegroundColor Gray
     Write-Host "└────────────────────────────────────────────────────────────────────────────┘" -ForegroundColor White
     Write-Host ""
     
