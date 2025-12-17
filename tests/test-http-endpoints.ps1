@@ -17,12 +17,15 @@ Computational Analysis & Geometry · Applied AI · Robotics
 if (Test-Path 'test_http_out.csv') {
     $results = Import-Csv 'test_http_out.csv'
     if ($results | Where-Object { $_.StatusCode -eq 200 }) {
-        Write-Host 'HTTP endpoint test passed.'
+        Write-Host '✓ HTTP endpoint test passed: Found successful responses' -ForegroundColor Green
+        exit 0
     }
     else {
-        Write-Host 'HTTP endpoint test failed: no 200 status.'
+        Write-Host '❌ HTTP endpoint test failed: No successful responses (200 status code)' -ForegroundColor Red
+        exit 1
     }
 }
 else {
-    Write-Host 'HTTP endpoint test failed: missing file.'
+    Write-Host '❌ HTTP endpoint test failed: Output file not created' -ForegroundColor Red
+    exit 1
 }

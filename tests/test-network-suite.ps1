@@ -31,64 +31,66 @@ $allPassed = $true
 
 # Validate DNS test output file and contents
 if (-not (Test-Path 'test_dns_out.csv')) {
-    Write-Host 'DNS test failed: missing file.'
+    Write-Host '❌ DNS test failed: Output file missing' -ForegroundColor Red
     $allPassed = $false
 }
 else {
     $dnsResults = Import-Csv 'test_dns_out.csv'
     # Check for expected DNS result columns
     if (-not $dnsResults.Hostname) {
-        Write-Host 'DNS test failed: missing data.'
+        Write-Host '❌ DNS test failed: Missing required data columns' -ForegroundColor Red
         $allPassed = $false
     }
 }
 
 # Validate traceroute test output file and contents
 if (-not (Test-Path 'test_trace_out.csv')) {
-    Write-Host 'Traceroute test failed: missing file.'
+    Write-Host '❌ Traceroute test failed: Output file missing' -ForegroundColor Red
     $allPassed = $false
 }
 else {
     $traceResults = Import-Csv 'test_trace_out.csv'
     # Check for expected traceroute result columns
     if (-not $traceResults.Host -or -not $traceResults.HopCount) {
-        Write-Host 'Traceroute test failed: missing data.'
+        Write-Host '❌ Traceroute test failed: Missing required data columns' -ForegroundColor Red
         $allPassed = $false
     }
 }
 
 # Validate bandwidth monitor test output file and contents
 if (-not (Test-Path 'test_bandwidth_out.csv')) {
-    Write-Host 'Bandwidth monitor test failed: missing file.'
+    Write-Host '❌ Bandwidth monitor test failed: Output file missing' -ForegroundColor Red
     $allPassed = $false
 }
 else {
     $bwResults = Import-Csv 'test_bandwidth_out.csv'
     # Check for expected bandwidth result columns
     if (-not $bwResults.Adapter -or -not $bwResults.Rx_Mbps) {
-        Write-Host 'Bandwidth monitor test failed: missing data.'
+        Write-Host '❌ Bandwidth monitor test failed: Missing required data columns' -ForegroundColor Red
         $allPassed = $false
     }
 }
 
 # Validate HTTP endpoint test output file and contents
 if (-not (Test-Path 'test_http_out.csv')) {
-    Write-Host 'HTTP endpoint test failed: missing file.'
+    Write-Host '❌ HTTP endpoint test failed: Output file missing' -ForegroundColor Red
     $allPassed = $false
 }
 else {
     $httpResults = Import-Csv 'test_http_out.csv'
     # Check for at least one HTTP 200 status code
     if (-not ($httpResults | Where-Object { $_.StatusCode -eq 200 })) {
-        Write-Host 'HTTP endpoint test failed: no 200 status.'
+        Write-Host '❌ HTTP endpoint test failed: No successful responses (200 status code)' -ForegroundColor Red
         $allPassed = $false
     }
 }
 
 # Final test suite result
 if ($allPassed) {
-    Write-Host 'Network test suite passed.'
+    Write-Host '✓ Network test suite passed: All tests completed successfully' -ForegroundColor Green
+    exit 0
 }
 else {
-    Write-Host 'Network test suite failed.'
+    Write-Host '❌ Network test suite failed: One or more tests failed' -ForegroundColor Red
+    exit 1
 }

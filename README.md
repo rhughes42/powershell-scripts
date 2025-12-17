@@ -57,6 +57,42 @@ powershell-scripts/
 - Prefer `Write-Host` for user-facing output and `Write-Log` for log entries.
 - Export results to CSV or other formats where useful.
 
+## Testing & Contributing
+
+### Running Tests
+
+All test scripts are located in the `tests/` directory and follow these conventions:
+- Explicit exit codes: `exit 0` for success, `exit 1` for failure
+- Clear, colored messages for test results
+- Avoid shadowing PowerShell reserved variables (e.g., `$Host`, `$Error`, `$Input`)
+
+To run tests locally:
+```powershell
+cd tests
+pwsh -File sample-test.ps1
+pwsh -File test-network-suite.ps1
+```
+
+### Code Quality Checks
+
+Before committing changes, run these quality checks:
+
+**Reserved Variable Scanner:**
+```powershell
+.github/scripts/scan-reserved-vars.ps1 -Path . -ExitOnError
+```
+
+**Syntax Validation:**
+```powershell
+Get-ChildItem -Path . -Filter "*.ps1" -Recurse | ForEach-Object {
+    $errors = $null
+    [System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$null, [ref]$errors)
+    if ($errors) { Write-Host "Errors in $($_.Name)" -ForegroundColor Red }
+}
+```
+
+For detailed contribution guidelines, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+
 ## Getting Started
 
 1. Clone the repository.

@@ -20,12 +20,18 @@ Computational Analysis & Geometry · Applied AI · Robotics
     Path to export results.
 #>
 
+param(
+    [string]$Target = '127.0.0.1',
+    [int[]]$Ports = @(22, 80, 443, 3389),
+    [string]$OutputCsv = 'PortScanResults.csv'
+)
+
 <#
 .SYNOPSIS
     Test if a TCP port is open on a host.
 .DESCRIPTION
     Attempts to connect to the specified host and port, returns $true if open, $false otherwise.
-.PARAMETER Host
+.PARAMETER TargetHost
     Hostname or IP address to test.
 .PARAMETER Port
     TCP port number to test.
@@ -33,12 +39,12 @@ Computational Analysis & Geometry · Applied AI · Robotics
     Boolean indicating if the port is open.
 #>
 function Test-Port {
-    param($Host, $Port)
+    param($TargetHost, $Port)
     try {
         # Create TCP client for connection attempt
         $tcp = New-Object System.Net.Sockets.TcpClient
         # Begin async connection attempt to avoid blocking
-        $iar = $tcp.BeginConnect($Host, $Port, $null, $null)
+        $iar = $tcp.BeginConnect($TargetHost, $Port, $null, $null)
         # Wait up to 500ms for connection to succeed
         $success = $iar.AsyncWaitHandle.WaitOne(500)
         if ($success -and $tcp.Connected) {
@@ -51,16 +57,10 @@ function Test-Port {
     catch { return $false }
 }
 
-param(
-    [string]$Target = '127.0.0.1',
-    [int[]]$Ports = @(22, 80, 443, 3389),
-    [string]$OutputCsv = 'PortScanResults.csv'
-)
-
 $results = @()
 # Scan each port in the list
 foreach ($port in $Ports) {
-    if (Test-Port -Host $Target -Port $port) {
+    if (Test-Port -TargetHost $Target -Port $port) {
         Write-Host "Port $port open on $Target"
         $results += [PSCustomObject]@{ Host = $Target; Port = $port; Status = 'Open' }
     }
