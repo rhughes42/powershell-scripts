@@ -21,23 +21,32 @@ param(
 )
 
 $results = @()
+# Iterate through all running processes on the system
 foreach ($proc in Get-Process) {
     $suspicious = $false
     $reason = @()
     try {
+        # Get the executable path for the process
         $path = $proc.Path
+        # Skip processes without a file path (system processes)
         if (-not $path) { continue }
+        
+        # Check if the executable has a valid digital signature
         $sig = Get-AuthenticodeSignature $path
         if ($sig.Status -ne 'Valid') {
             $suspicious = $true
             $reason += 'Unsigned or invalid signature'
         }
+        
+        # Retrieve the parent process ID to detect orphaned processes
         $parent = (Get-CimInstance Win32_Process -Filter "ProcessId=$($proc.Id)").ParentProcessId
         if ($parent -eq 0) {
             $suspicious = $true
             $reason += 'No parent process'
         }
-        # Example: check for known bad hashes (add your own list)
+        
+        # Compare file hash against known malicious hashes (IoC detection)
+        # TODO: Replace with actual threat intelligence feed or known bad hash list
         $hash = (Get-FileHash $path -Algorithm SHA256).Hash
         $badHashes = @('DEADBEEF...')
         if ($badHashes -contains $hash) {
@@ -46,6 +55,8 @@ foreach ($proc in Get-Process) {
         }
     }
     catch { $reason += 'Error inspecting process' }
+    
+    # Add suspicious processes to results array
     if ($suspicious) {
         $results += [PSCustomObject]@{
             Name    = $proc.Name

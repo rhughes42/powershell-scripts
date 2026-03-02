@@ -35,8 +35,11 @@ Computational Analysis & Geometry · Applied AI · Robotics
 function Test-Port {
     param($Host, $Port)
     try {
+        # Create TCP client for connection attempt
         $tcp = New-Object System.Net.Sockets.TcpClient
+        # Begin async connection attempt to avoid blocking
         $iar = $tcp.BeginConnect($Host, $Port, $null, $null)
+        # Wait up to 500ms for connection to succeed
         $success = $iar.AsyncWaitHandle.WaitOne(500)
         if ($success -and $tcp.Connected) {
             $tcp.Close()
@@ -55,6 +58,7 @@ param(
 )
 
 $results = @()
+# Scan each port in the list
 foreach ($port in $Ports) {
     if (Test-Port -Host $Target -Port $port) {
         Write-Host "Port $port open on $Target"
