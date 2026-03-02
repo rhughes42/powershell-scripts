@@ -1,0 +1,17 @@
+{
+	"recommendations": [
+		"ms-vscode.powershell",
+		"ms-vscode-remote.remote-wsl",
+		"eamodio.gitlens",
+		"mhutchie.git-graph",
+		"usernamehw.errorlens"
+	],
+	"unwantedRecommendations": [
+		"ms-toolsai.jupyter",
+		"ms-python.python",
+		"ms-dotnettools.csharp",
+		"redhat.java",
+		"golang.go",
+		"ms-vscode.cpptools"
+	]
+}
