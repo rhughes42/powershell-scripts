@@ -10,8 +10,8 @@ This document summarizes the security analysis performed on newly added scripts 
 
 ## Scripts Analyzed
 
-1. `windows-performance/monitor-performance-dashboard.ps1`
-2. `windows-network/manage-vpn-connections.ps1`
+1. `windows/performance/monitor-performance-dashboard.ps1`
+2. `windows/network/manage-vpn-connections.ps1`
 3. `utils/system-health-check.ps1`
 4. `tests/test-new-functionality.ps1`
 
@@ -184,3 +184,7 @@ This security summary documents the security analysis performed on the new funct
 
 **Graph Technologies** · https://graphtechnologies.xyz/  
 *Security Review Completed: December 2024*
+
+
+
+

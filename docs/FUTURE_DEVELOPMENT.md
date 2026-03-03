@@ -12,7 +12,7 @@ This document outlines potential extensions, new features, and integration ideas
 
 **Implementation Ideas**:
 ```powershell
-# windows-performance/monitor-performance-dashboard.ps1
+# windows/performance/monitor-performance-dashboard.ps1
 # Real-time multi-metric dashboard with alerts and trending
 - Monitor: CPU, Memory, Disk I/O, Network, Process Count
 - Alert thresholds with email/webhook notifications
@@ -59,9 +59,9 @@ This document outlines potential extensions, new features, and integration ideas
 
 **Implementation Ideas**:
 ```powershell
-# windows-network/manage-vpn-connections.ps1
-# windows-network/manage-wifi-profiles.ps1
-# windows-network/analyze-network-traffic.ps1
+# windows/network/manage-vpn-connections.ps1
+# windows/network/manage-wifi-profiles.ps1
+# windows/network/analyze-network-traffic.ps1
 - VPN connection automation
 - WiFi profile export/import
 - Network adapter configuration templates
@@ -439,3 +439,7 @@ This repository has significant potential for expansion. Focus should be on:
 **Graph Technologies** · https://graphtechnologies.xyz/
 
 *Last Updated: December 2024*
+
+
+
+

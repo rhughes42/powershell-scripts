@@ -15,29 +15,29 @@ Added inline comments to improve code readability and maintainability:
 ### 2. New Windows Integration Features ✅
 Created 8 new feature categories with 11 comprehensive management scripts:
 
-#### Windows Services (`windows-services/`)
+#### Windows Services (`windows/services/`)
 - **`manage-windows-services.ps1`**: Complete service lifecycle management (list, start, stop, restart, enable, disable, status, dependencies)
 - **`monitor-critical-services.ps1`**: Real-time service monitoring with automatic restart capabilities and logging
 
-#### Windows Scheduled Tasks (`windows-tasks/`)
+#### Windows Scheduled Tasks (`windows/tasks/`)
 - **`manage-scheduled-tasks.ps1`**: Full task scheduler interface for PowerShell script automation (create, delete, list, run, enable, disable, export, history)
 
-#### Windows Firewall (`windows-firewall/`)
+#### Windows Firewall (`windows/firewall/`)
 - **`manage-windows-firewall.ps1`**: Comprehensive firewall management (allow/block ports, application rules, audit, status)
 
-#### Windows Updates (`windows-updates/`)
+#### Windows Updates (`windows/updates/`)
 - **`manage-windows-updates.ps1`**: Windows Update automation (check, list, download, install, history, settings)
 
-#### Windows Defender (`windows-defender/`)
+#### Windows Defender (`windows/defender/`)
 - **`manage-windows-defender.ps1`**: Antivirus control (status, quick/full/custom scans, update signatures, threats, exclusions)
 
-#### Windows Registry (`windows-registry/`)
+#### Windows Registry (`windows/registry/`)
 - **`manage-windows-registry.ps1`**: Registry operations (monitor changes, backup, restore, search, get/set values, permissions)
 
-#### Windows Event Logs (`windows-events/`)
+#### Windows Event Logs (`windows/events/`)
 - **`monitor-event-logs.ps1`**: Advanced event log monitoring (real-time monitoring, search, analyze, export, statistics)
 
-#### Windows Backup (`windows-backup/`)
+#### Windows Backup (`windows/backup/`)
 - **`manage-windows-backup.ps1`**: Backup automation (create, list, verify, delete old backups, retention management)
 
 ### 3. Comprehensive Documentation ✅
@@ -206,3 +206,7 @@ The foundation is now in place for continued expansion into areas like Active Di
 
 **Graph Technologies** · https://graphtechnologies.xyz/
 *December 2024*
+
+
+
+

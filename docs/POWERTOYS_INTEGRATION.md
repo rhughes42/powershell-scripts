@@ -71,59 +71,59 @@ Add to your PowerShell profile (`$PROFILE`):
 
 ```powershell
 # Service management aliases
-function svc-list { & "C:\Scripts\windows-services\manage-windows-services.ps1" -Action List }
-function svc-start { 
+function svc-list { & "C:\Scripts\windows\services\manage-windows-services.ps1" -Action List }
+function svc-start {
     param([string]$Name)
-    & "C:\Scripts\windows-services\manage-windows-services.ps1" -Action Start -ServiceName $Name 
+    & "C:\Scripts\windows\services\manage-windows-services.ps1" -Action Start -ServiceName $Name
 }
-function svc-monitor { 
+function svc-monitor {
     param([string[]]$Names)
-    & "C:\Scripts\windows-services\monitor-critical-services.ps1" -ServiceNames $Names 
+    & "C:\Scripts\windows\services\monitor-critical-services.ps1" -ServiceNames $Names
 }
 
 # Firewall aliases
-function fw-status { & "C:\Scripts\windows-firewall\manage-windows-firewall.ps1" -Action GetStatus }
-function fw-audit { & "C:\Scripts\windows-firewall\manage-windows-firewall.ps1" -Action Audit }
+function fw-status { & "C:\Scripts\windows\firewall\manage-windows-firewall.ps1" -Action GetStatus }
+function fw-audit { & "C:\Scripts\windows\firewall\manage-windows-firewall.ps1" -Action Audit }
 
 # Defender aliases
-function def-scan { & "C:\Scripts\windows-defender\manage-windows-defender.ps1" -Action QuickScan }
-function def-status { & "C:\Scripts\windows-defender\manage-windows-defender.ps1" -Action Status }
-function def-update { & "C:\Scripts\windows-defender\manage-windows-defender.ps1" -Action UpdateSignatures }
+function def-scan { & "C:\Scripts\windows\defender\manage-windows-defender.ps1" -Action QuickScan }
+function def-status { & "C:\Scripts\windows\defender\manage-windows-defender.ps1" -Action Status }
+function def-update { & "C:\Scripts\windows\defender\manage-windows-defender.ps1" -Action UpdateSignatures }
 
 # Update aliases
-function upd-check { & "C:\Scripts\windows-updates\manage-windows-updates.ps1" -Action Check }
-function upd-install { & "C:\Scripts\windows-updates\manage-windows-updates.ps1" -Action Install }
+function upd-check { & "C:\Scripts\windows\updates\manage-windows-updates.ps1" -Action Check }
+function upd-install { & "C:\Scripts\windows\updates\manage-windows-updates.ps1" -Action Install }
 
 # Event log aliases
-function evt-monitor { 
+function evt-monitor {
     param([string]$LogName = "System")
-    & "C:\Scripts\windows-events\monitor-event-logs.ps1" -Action Monitor -LogName $LogName 
+    & "C:\Scripts\windows\events\monitor-event-logs.ps1" -Action Monitor -LogName $LogName
 }
-function evt-search { 
+function evt-search {
     param([string]$LogName, [string]$Keywords)
-    & "C:\Scripts\windows-events\monitor-event-logs.ps1" -Action Search -LogName $LogName -Keywords $Keywords 
+    & "C:\Scripts\windows\events\monitor-event-logs.ps1" -Action Search -LogName $LogName -Keywords $Keywords
 }
 
 # Backup aliases
-function backup-create { 
+function backup-create {
     param([string]$Path, [string[]]$Sources)
-    & "C:\Scripts\windows-backup\manage-windows-backup.ps1" -Action CreateBackup -BackupPath $Path -SourcePaths $Sources 
+    & "C:\Scripts\windows\backup\manage-windows-backup.ps1" -Action CreateBackup -BackupPath $Path -SourcePaths $Sources
 }
-function backup-list { 
+function backup-list {
     param([string]$Path)
-    & "C:\Scripts\windows-backup\manage-windows-backup.ps1" -Action ListBackups -BackupPath $Path 
+    & "C:\Scripts\windows\\backup\\manage-windows-backup.ps1" -Action ListBackups -BackupPath $Path
 }
 
 # Registry aliases
-function reg-backup { 
+    & "C:\Scripts\windows\backup\manage-windows-backup.ps1" -Action ListBackups -BackupPath $Path
     param([string]$KeyPath, [string]$BackupPath)
-    & "C:\Scripts\windows-registry\manage-windows-registry.ps1" -Action Backup -KeyPath $KeyPath -BackupPath $BackupPath 
+    & "C:\Scripts\windows\\registry\\manage-windows-registry.ps1" -Action Backup -KeyPath $KeyPath -BackupPath $BackupPath
 }
-function reg-search { 
+    & "C:\Scripts\windows\registry\manage-windows-registry.ps1" -Action Backup -KeyPath $KeyPath -BackupPath $BackupPath
     param([string]$Term)
-    & "C:\Scripts\windows-registry\manage-windows-registry.ps1" -Action Search -SearchTerm $Term 
+    & "C:\Scripts\windows\\registry\\manage-windows-registry.ps1" -Action Search -SearchTerm $Term
 }
-```
+    & "C:\Scripts\windows\registry\manage-windows-registry.ps1" -Action Search -SearchTerm $Term
 
 Then use in PowerToys Run:
 ```
@@ -140,13 +140,13 @@ Create `.cmd` or `.bat` files in a PATH directory:
 **Example**: `C:\Scripts\bin\svc-list.cmd`
 ```batch
 @echo off
-pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\windows-services\manage-windows-services.ps1" -Action List
+pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\windows\services\manage-windows-services.ps1" -Action List
 ```
 
 **Example**: `C:\Scripts\bin\def-scan.cmd`
 ```batch
 @echo off
-pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\windows-defender\manage-windows-defender.ps1" -Action QuickScan
+pwsh.exe -NoProfile -ExecutionPolicy Bypass -File "C:\Scripts\windows\defender\manage-windows-defender.ps1" -Action QuickScan
 pause
 ```
 
@@ -168,31 +168,31 @@ Edit `settings.json` in Windows Terminal:
         "list": [
             {
                 "name": "Service Monitor",
-                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows-services\\monitor-critical-services.ps1' -ServiceNames 'W32Time','Spooler'\"",
+                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows/services/monitor-critical-services.ps1' -ServiceNames 'W32Time','Spooler'\"",
                 "icon": "🔧",
                 "startingDirectory": "C:\\Scripts"
             },
             {
                 "name": "Defender Status",
-                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows-defender\\manage-windows-defender.ps1' -Action Status\"",
+                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows/defender/manage-windows-defender.ps1' -Action Status\"",
                 "icon": "🛡️",
                 "startingDirectory": "C:\\Scripts"
             },
             {
                 "name": "Event Log Monitor",
-                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows-events\\monitor-event-logs.ps1' -Action Monitor -LogName System\"",
+                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows/events/monitor-event-logs.ps1' -Action Monitor -LogName System\"",
                 "icon": "📊",
                 "startingDirectory": "C:\\Scripts"
             },
             {
                 "name": "Firewall Audit",
-                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows-firewall\\manage-windows-firewall.ps1' -Action Audit\"",
+                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows/firewall/manage-windows-firewall.ps1' -Action Audit\"",
                 "icon": "🔥",
                 "startingDirectory": "C:\\Scripts"
             },
             {
                 "name": "System Backup",
-                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows-backup\\manage-windows-backup.ps1' -Action CreateBackup -BackupPath 'E:\\Backups' -SourcePaths 'C:\\Users','C:\\Important'\"",
+                "commandline": "pwsh.exe -NoExit -Command \"& 'C:\\Scripts\\windows/backup/manage-windows-backup.ps1' -Action CreateBackup -BackupPath 'E:\\Backups' -SourcePaths 'C:\\Users','C:\\Important'\"",
                 "icon": "💾",
                 "startingDirectory": "C:\\Scripts"
             }
@@ -252,14 +252,14 @@ Windows Registry Editor Version 5.00
 "Icon"="C:\\Program Files\\Windows Defender\\EppManifest.dll"
 
 [HKEY_CLASSES_ROOT\Directory\shell\DefenderScan\command]
-@="pwsh.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Scripts\\windows-defender\\manage-windows-defender.ps1\" -Action CustomScan -Path \"%1\""
+@="pwsh.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Scripts\\windows/defender/manage-windows-defender.ps1\" -Action CustomScan -Path \"%1\""
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\DefenderScan]
 @="Scan this folder with Defender"
 "Icon"="C:\\Program Files\\Windows Defender\\EppManifest.dll"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\DefenderScan\command]
-@="pwsh.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Scripts\\windows-defender\\manage-windows-defender.ps1\" -Action CustomScan -Path \"%V\""
+@="pwsh.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Scripts\\windows/defender/manage-windows-defender.ps1\" -Action CustomScan -Path \"%V\""
 ```
 
 **Example**: `add-backup-context.reg`
@@ -271,7 +271,7 @@ Windows Registry Editor Version 5.00
 "Icon"="imageres.dll,-1002"
 
 [HKEY_CLASSES_ROOT\Directory\shell\BackupFolder\command]
-@="pwsh.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Scripts\\windows-backup\\manage-windows-backup.ps1\" -Action CreateBackup -BackupPath \"E:\\Backups\" -SourcePaths \"%1\""
+@="pwsh.exe -NoProfile -ExecutionPolicy Bypass -File \"C:\\Scripts\\windows/backup/manage-windows-backup.ps1\" -Action CreateBackup -BackupPath \"E:\\Backups\" -SourcePaths \"%1\""
 ```
 
 Import with: `reg import add-defender-scan-context.reg`
@@ -295,8 +295,8 @@ Use PowerToys Keyboard Manager to create custom shortcuts:
 2. Go to "Keyboard Manager"
 3. Click "Remap a shortcut"
 4. Map keys to run scripts, e.g.:
-   - `Ctrl + Alt + S` → `pwsh.exe -File C:\Scripts\windows-services\monitor-critical-services.ps1`
-   - `Ctrl + Alt + D` → `pwsh.exe -File C:\Scripts\windows-defender\manage-windows-defender.ps1 -Action QuickScan`
+    - `Ctrl + Alt + S` → `pwsh.exe -File C:\Scripts\windows\services\monitor-critical-services.ps1`
+    - `Ctrl + Alt + D` → `pwsh.exe -File C:\Scripts\windows\defender\manage-windows-defender.ps1 -Action QuickScan`
 
 ## Tips and Tricks
 
@@ -330,19 +330,19 @@ function Show-Menu {
 do {
     Show-Menu
     $choice = Read-Host "Select option"
-    
+
     switch ($choice) {
-        '1' { & ".\windows-services\manage-windows-services.ps1" -Action List }
-        '2' { & ".\windows-services\monitor-critical-services.ps1" -ServiceNames "W32Time","Spooler" }
-        '3' { & ".\windows-defender\manage-windows-defender.ps1" -Action Status }
-        '4' { & ".\windows-defender\manage-windows-defender.ps1" -Action QuickScan }
-        '5' { & ".\windows-firewall\manage-windows-firewall.ps1" -Action Audit }
-        '6' { & ".\windows-updates\manage-windows-updates.ps1" -Action Check }
-        '7' { & ".\windows-events\monitor-event-logs.ps1" -Action Monitor -LogName System -Duration 60 }
-        '8' { & ".\windows-backup\manage-windows-backup.ps1" -Action CreateBackup -BackupPath "E:\Backups" -SourcePaths "C:\Users" }
+        '1' { & ".\windows/services/manage-windows-services.ps1" -Action List }
+        '2' { & ".\windows/services/monitor-critical-services.ps1" -ServiceNames "W32Time","Spooler" }
+        '3' { & ".\windows/defender/manage-windows-defender.ps1" -Action Status }
+        '4' { & ".\windows/defender/manage-windows-defender.ps1" -Action QuickScan }
+        '5' { & ".\windows/firewall/manage-windows-firewall.ps1" -Action Audit }
+        '6' { & ".\windows/updates/manage-windows-updates.ps1" -Action Check }
+        '7' { & ".\windows/events/monitor-event-logs.ps1" -Action Monitor -LogName System -Duration 60 }
+        '8' { & ".\windows/backup/manage-windows-backup.ps1" -Action CreateBackup -BackupPath "E:\Backups" -SourcePaths "C:\Users" }
         'Q' { return }
     }
-    
+
     Read-Host "`nPress Enter to continue"
 } while ($true)
 ```

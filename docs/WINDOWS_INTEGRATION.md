@@ -8,43 +8,43 @@ This collection provides enterprise-grade tools for managing Windows systems thr
 
 ## Categories
 
-### 🔧 Windows Services (`windows-services/`)
+### 🔧 Windows Services (`windows/services/`)
 Manage and monitor Windows services with automated restart capabilities.
 
 - **`manage-windows-services.ps1`** - Comprehensive service management (start/stop/restart/enable/disable)
 - **`monitor-critical-services.ps1`** - Real-time service monitoring with auto-restart
 
-### ⏰ Scheduled Tasks (`windows-tasks/`)
+### ⏰ Scheduled Tasks (`windows/tasks/`)
 Create and manage Windows Scheduled Tasks for PowerShell script automation.
 
 - **`manage-scheduled-tasks.ps1`** - Complete task scheduler interface for PowerShell scripts
 
-### 🔥 Windows Firewall (`windows-firewall/`)
+### 🔥 Windows Firewall (`windows/firewall/`)
 Manage Windows Firewall rules for enhanced security control.
 
 - **`manage-windows-firewall.ps1`** - Create, modify, audit firewall rules and port management
 
-### 🔄 Windows Updates (`windows-updates/`)
+### 🔄 Windows Updates (`windows/updates/`)
 Automate Windows Update management and monitoring.
 
 - **`manage-windows-updates.ps1`** - Check, download, install Windows updates with control
 
-### 🛡️ Windows Defender (`windows-defender/`)
+### 🛡️ Windows Defender (`windows/defender/`)
 Control Windows Defender antivirus and security features.
 
 - **`manage-windows-defender.ps1`** - Scans, exclusions, signature updates, threat history
 
-### 📝 Windows Registry (`windows-registry/`)
+### 📝 Windows Registry (`windows/registry/`)
 Monitor, backup, restore, and manage Windows Registry.
 
 - **`manage-windows-registry.ps1`** - Registry monitoring, backup/restore, search, permissions
 
-### 📊 Windows Event Logs (`windows-events/`)
+### 📊 Windows Event Logs (`windows/events/`)
 Advanced event log monitoring with real-time alerts and pattern detection.
 
 - **`monitor-event-logs.ps1`** - Real-time monitoring, search, analyze, export event logs
 
-### 💾 Windows Backup (`windows-backup/`)
+### 💾 Windows Backup (`windows/backup/`)
 Automated backup and restore operations.
 
 - **`manage-windows-backup.ps1`** - File backup, verification, retention management
@@ -76,24 +76,24 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### List all services with details
 ```powershell
-.\windows-services\manage-windows-services.ps1 -Action List -OutputCsv "services.csv"
+.\windows/services/manage-windows-services.ps1 -Action List -OutputCsv "services.csv"
 ```
 
 #### Start a service
 ```powershell
-.\windows-services\manage-windows-services.ps1 -Action Start -ServiceName "Spooler"
+.\windows/services/manage-windows-services.ps1 -Action Start -ServiceName "Spooler"
 ```
 
 #### Monitor critical services with auto-restart
 ```powershell
-.\windows-services\monitor-critical-services.ps1 -ServiceNames "W32Time","Spooler","Dhcp" -CheckIntervalSeconds 60
+.\windows/services/monitor-critical-services.ps1 -ServiceNames "W32Time","Spooler","Dhcp" -CheckIntervalSeconds 60
 ```
 
 ### Scheduled Tasks
 
 #### Create a daily backup task
 ```powershell
-.\windows-tasks\manage-scheduled-tasks.ps1 `
+.\windows/tasks/manage-scheduled-tasks.ps1 `
     -Action Create `
     -TaskName "DailyBackup" `
     -ScriptPath "C:\Scripts\backup.ps1" `
@@ -103,7 +103,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Create a weekly report task
 ```powershell
-.\windows-tasks\manage-scheduled-tasks.ps1 `
+.\windows/tasks/manage-scheduled-tasks.ps1 `
     -Action Create `
     -TaskName "WeeklyReport" `
     -ScriptPath "C:\Scripts\report.ps1" `
@@ -114,14 +114,14 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### View task execution history
 ```powershell
-.\windows-tasks\manage-scheduled-tasks.ps1 -Action GetHistory -TaskName "DailyBackup"
+.\windows/tasks/manage-scheduled-tasks.ps1 -Action GetHistory -TaskName "DailyBackup"
 ```
 
 ### Windows Firewall
 
 #### Allow a port (e.g., SSH)
 ```powershell
-.\windows-firewall\manage-windows-firewall.ps1 `
+.\windows/firewall/manage-windows-firewall.ps1 `
     -Action AllowPort `
     -RuleName "Allow SSH" `
     -Port 22 `
@@ -131,7 +131,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Block a port
 ```powershell
-.\windows-firewall\manage-windows-firewall.ps1 `
+.\windows/firewall/manage-windows-firewall.ps1 `
     -Action BlockPort `
     -RuleName "Block Telnet" `
     -Port 23 `
@@ -140,19 +140,19 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Audit all firewall rules
 ```powershell
-.\windows-firewall\manage-windows-firewall.ps1 -Action Audit -OutputCsv "firewall-audit.csv"
+.\windows/firewall/manage-windows-firewall.ps1 -Action Audit -OutputCsv "firewall-audit.csv"
 ```
 
 ### Windows Updates
 
 #### Check for available updates
 ```powershell
-.\windows-updates\manage-windows-updates.ps1 -Action Check
+.\windows/updates/manage-windows-updates.ps1 -Action Check
 ```
 
 #### Install security updates without reboot
 ```powershell
-.\windows-updates\manage-windows-updates.ps1 `
+.\windows/updates/manage-windows-updates.ps1 `
     -Action Install `
     -UpdateType Security `
     -AutoReboot $false
@@ -160,24 +160,24 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### View update history
 ```powershell
-.\windows-updates\manage-windows-updates.ps1 -Action GetHistory -OutputCsv "update-history.csv"
+.\windows/updates/manage-windows-updates.ps1 -Action GetHistory -OutputCsv "update-history.csv"
 ```
 
 ### Windows Defender
 
 #### Check Defender status
 ```powershell
-.\windows-defender\manage-windows-defender.ps1 -Action Status
+.\windows/defender/manage-windows-defender.ps1 -Action Status
 ```
 
 #### Run a quick scan
 ```powershell
-.\windows-defender\manage-windows-defender.ps1 -Action QuickScan
+.\windows/defender/manage-windows-defender.ps1 -Action QuickScan
 ```
 
 #### Add an exclusion
 ```powershell
-.\windows-defender\manage-windows-defender.ps1 `
+.\windows/defender/manage-windows-defender.ps1 `
     -Action AddExclusion `
     -Path "C:\MyApp" `
     -ExclusionType Path
@@ -185,14 +185,14 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Update signatures
 ```powershell
-.\windows-defender\manage-windows-defender.ps1 -Action UpdateSignatures
+.\windows/defender/manage-windows-defender.ps1 -Action UpdateSignatures
 ```
 
 ### Windows Registry
 
 #### Backup a registry key
 ```powershell
-.\windows-registry\manage-windows-registry.ps1 `
+.\windows/registry/manage-windows-registry.ps1 `
     -Action Backup `
     -KeyPath "HKLM:\SOFTWARE\MyApp" `
     -BackupPath "myapp_backup.reg"
@@ -200,7 +200,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Monitor registry for changes
 ```powershell
-.\windows-registry\manage-windows-registry.ps1 `
+.\windows/registry/manage-windows-registry.ps1 `
     -Action Monitor `
     -KeyPath "HKCU:\Software\Microsoft" `
     -MonitorDuration 300
@@ -208,14 +208,14 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Search registry
 ```powershell
-.\windows-registry\manage-windows-registry.ps1 -Action Search -SearchTerm "MyApp"
+.\windows/registry/manage-windows-registry.ps1 -Action Search -SearchTerm "MyApp"
 ```
 
 ### Windows Event Logs
 
 #### Monitor Security log for failed logons
 ```powershell
-.\windows-events\monitor-event-logs.ps1 `
+.\windows/events/monitor-event-logs.ps1 `
     -Action Monitor `
     -LogName Security `
     -EventIds 4625 `
@@ -224,7 +224,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Search System log for errors
 ```powershell
-.\windows-events\monitor-event-logs.ps1 `
+.\windows/events/monitor-event-logs.ps1 `
     -Action Search `
     -LogName System `
     -Level Error `
@@ -233,7 +233,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Analyze Application log
 ```powershell
-.\windows-events\monitor-event-logs.ps1 `
+.\windows/events/monitor-event-logs.ps1 `
     -Action Analyze `
     -LogName Application `
     -OutputCsv "app-analysis.csv"
@@ -243,7 +243,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### Create file backup
 ```powershell
-.\windows-backup\manage-windows-backup.ps1 `
+.\windows/backup/manage-windows-backup.ps1 `
     -Action CreateBackup `
     -BackupPath "E:\Backups" `
     -SourcePaths "C:\Users","C:\Important"
@@ -251,14 +251,14 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 
 #### List backups
 ```powershell
-.\windows-backup\manage-windows-backup.ps1 `
+.\windows/backup/manage-windows-backup.ps1 `
     -Action ListBackups `
     -BackupPath "E:\Backups"
 ```
 
 #### Delete old backups (older than 30 days)
 ```powershell
-.\windows-backup\manage-windows-backup.ps1 `
+.\windows/backup/manage-windows-backup.ps1 `
     -Action DeleteOldBackups `
     -BackupPath "E:\Backups" `
     -RetentionDays 30
@@ -276,7 +276,7 @@ All scripts can be scheduled using Windows Task Scheduler. Use the `manage-sched
 
 ```powershell
 # Example: Schedule daily system health check
-.\windows-tasks\manage-scheduled-tasks.ps1 `
+.\windows/tasks/manage-scheduled-tasks.ps1 `
     -Action Create `
     -TaskName "DailyHealthCheck" `
     -ScriptPath "C:\Scripts\system\get-system-info.ps1" `
@@ -295,7 +295,7 @@ Add scripts as Windows Terminal profiles for quick access. Edit your `settings.j
         "list": [
             {
                 "name": "Service Monitor",
-                "commandline": "pwsh.exe -NoExit -File C:\\Scripts\\windows-services\\monitor-critical-services.ps1",
+                "commandline": "pwsh.exe -NoExit -File C:\\Scripts\\windows/services/monitor-critical-services.ps1",
                 "icon": "🔧"
             }
         ]
@@ -314,19 +314,19 @@ Create a scheduled task that runs nightly to perform system maintenance:
 param([string]$LogPath = "C:\Logs\maintenance.log")
 
 # Update Windows Defender
-.\windows-defender\manage-windows-defender.ps1 -Action UpdateSignatures
+.\windows/defender/manage-windows-defender.ps1 -Action UpdateSignatures
 
 # Check for Windows Updates
-.\windows-updates\manage-windows-updates.ps1 -Action Check
+.\windows/updates/manage-windows-updates.ps1 -Action Check
 
 # Backup critical registry keys
-.\windows-registry\manage-windows-registry.ps1 `
+.\windows/registry/manage-windows-registry.ps1 `
     -Action Backup `
     -KeyPath "HKLM:\SOFTWARE\MyApp" `
     -BackupPath "C:\Backups\registry_$(Get-Date -Format 'yyyyMMdd').reg"
 
 # Clean old backups
-.\windows-backup\manage-windows-backup.ps1 `
+.\windows/backup/manage-windows-backup.ps1 `
     -Action DeleteOldBackups `
     -BackupPath "C:\Backups" `
     -RetentionDays 30
@@ -336,7 +336,7 @@ Write-Host "Maintenance completed at $(Get-Date)" | Out-File $LogPath -Append
 
 Schedule it:
 ```powershell
-.\windows-tasks\manage-scheduled-tasks.ps1 `
+.\windows/tasks/manage-scheduled-tasks.ps1 `
     -Action Create `
     -TaskName "NightlyMaintenance" `
     -ScriptPath "C:\Scripts\maintenance-script.ps1" `
@@ -350,10 +350,10 @@ Monitor security-critical events and services:
 
 ```powershell
 # Start service monitoring in background
-Start-Process pwsh -ArgumentList "-File .\windows-services\monitor-critical-services.ps1 -ServiceNames 'W32Time','EventLog','WinDefend'" -WindowStyle Hidden
+Start-Process pwsh -ArgumentList "-File .\windows/services/monitor-critical-services.ps1 -ServiceNames 'W32Time','EventLog','WinDefend'" -WindowStyle Hidden
 
 # Monitor security event log
-.\windows-events\monitor-event-logs.ps1 `
+.\windows/events/monitor-event-logs.ps1 `
     -Action Monitor `
     -LogName Security `
     -EventIds 4625,4624,4672 `
@@ -368,18 +368,18 @@ $backupPath = "E:\Backups"
 $sources = @("C:\Users", "C:\ImportantData", "D:\Projects")
 
 # Create backup
-.\windows-backup\manage-windows-backup.ps1 `
+.\windows/backup/manage-windows-backup.ps1 `
     -Action CreateBackup `
     -BackupPath $backupPath `
     -SourcePaths $sources
 
 # Verify backup
-.\windows-backup\manage-windows-backup.ps1 `
+.\windows/backup/manage-windows-backup.ps1 `
     -Action VerifyBackup `
     -BackupPath (Get-ChildItem $backupPath -Directory | Sort-Object Name -Descending | Select-Object -First 1).FullName
 
 # Clean old backups
-.\windows-backup\manage-windows-backup.ps1 `
+.\windows/backup/manage-windows-backup.ps1 `
     -Action DeleteOldBackups `
     -BackupPath $backupPath `
     -RetentionDays 30
@@ -444,3 +444,8 @@ For issues, questions, or suggestions:
 ---
 
 **Graph Technologies** · Computational Analysis & Geometry · Applied AI · Robotics
+
+
+
+
+
